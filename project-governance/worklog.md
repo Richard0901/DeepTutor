@@ -2,6 +2,30 @@
 
 > 按日期倒序记录。每条注明涉及的工作包（WP）与证据位置。已完成事项必须有对应 commit 或文档；未完成事项如实标注。
 
+## 2026-10-06（第二批）— WP4 学员训练闭环 + HTTP 权限测试 + clinical-offline 最小版 + 管理文档
+
+**代码（本批 commit 1）**：
+
+1. **WP4 学员训练与结构化推理轨迹**（`deeptutor/clinical/attempts.py` + migration 0003 + 5 个 API 路由）：
+   - 尝试生命周期：仅 open 作业 + 在读学生 + published 病例；多次重练留痕（append-only）
+   - 六类推理步骤（问题表征/鉴别诊断/关键证据/检查选择/处置方案/再评估），前五类必填齐备才能提交；提交后锁定不可改
+   - 教师复核：仅本班 teacher/course_admin，支持逐步标记 + 意见；跨班教师/学员一律拒绝
+2. **HTTP 层权限测试**（`tests/api/`）：教学路由 4 项 + 临床路由（双审/发布/训练全旅程）4 项 + 学习面映射 2 项；采用仓库惯例（独立 app + contextvar 注入 + `DEEPTUTOR_TEACHING_DB` 隔离）
+3. **学习面映射扩展**（`deeptutor/api/routers/auth.py`）：`/api/v1/teaching`、`/api/v1/clinical` 加入学习账号可用面（此前学员一律 403）；课程级权限仍由服务层裁决
+4. **clinical-offline 最小可行版**：`deeptutor/deployment/offline.py` 启动守卫（该模式下 auth 未启用拒绝启动）+ `configs/clinical-offline/`（7 个设置模板、compose、nginx 边界代理示例、README 声明"网络层 egress 拒绝必须由宿主/网络策略落实"）
+5. **治理 CI**：`.github/workflows/governance.yml`（CycloneDX SBOM + pip-audit + 许可证清单，产物随构建上传）
+6. **测试 64 项全部通过**（含既有 36 项不回归）+ ruff 清洁 + 全链路演练（建课程→建班→导入 10 病例→双审发布→作业→五步训练→提交→复核）
+
+**管理文档（本批 commit 2）**：D1 病例计数口径、D2 八类错误字典两份决策签字稿；10 月月度进度填报（含 7-9 月补报口径）；专家病例生产指引一页。
+
+**v0.1.0-governed-baseline 打标状态**：SBOM（CI 产出）、clinical-offline 配置、migration 骨架三项条件就绪；**唯一未满足项为 D1-D4 签字**——签字完成前不打标（不把待办表述为已完成）。
+
+**安全提醒**：本地 `data/user/settings/model_catalog.json` 存有开发期使用的真实 API 密钥（8 月知识库搭建时填入；该目录已被 .gitignore 排除、未入库）。离线部署前必须轮换/清除，见 `configs/clinical-offline/README.md`。
+
+**待办（下次）**：虚拟患者状态机原型（Sprint 3/WP6）；评估助手初评框架（WP7）；完整 10 项服务层离线硬闸门（G3 前）；D1-D4 签字与伦理备案（人工）。
+
+---
+
 ## 2026-10-06 — Sprint 0 + Sprint 2 后端首版（WP2/WP3 部分）
 
 **提交内容**（本次 commit）：

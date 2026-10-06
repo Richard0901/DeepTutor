@@ -39,10 +39,10 @@
 
 ## 5. v0.1.0-governed-baseline 打标条件（未达成，不提前打标）
 
-- [ ] SBOM（依赖清单与许可证扫描）
-- [ ] `clinical-offline` 离线配置清单（云模型/外部搜索/MCP 等默认关闭）
-- [x] 教学领域数据库 migration 骨架（WP2 首版，2026-10-06 完成，见 `worklog.md`）
-- [ ] 决策清单（见 `decisions-register.md`）中 D1–D4 完成签字
+- [x] SBOM（依赖清单与许可证扫描）——`.github/workflows/governance.yml`（CycloneDX + pip-audit + 许可证清单），产物随 CI 构建生成，2026-10-06 就绪
+- [x] `clinical-offline` 离线配置清单——`configs/clinical-offline/`（设置模板 + compose + 启动守卫），2026-10-06 就绪（最小可行版；服务层完整硬闸门排至 G3 前，见 `worklog.md`）
+- [x] 教学领域数据库 migration 骨架（WP2/WP3/WP4 首版，2026-10-06 完成，见 `worklog.md`）
+- [ ] 决策清单（见 `decisions-register.md`）中 D1–D4 完成签字 ← **打标前唯一未满足条件**（签字稿已备：`decisions/D1…`、`decisions/D2…`）
 
 ## 6. G0 尚未关闭的其他闸门事项
 
