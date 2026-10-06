@@ -439,3 +439,77 @@ def review_assessment_score(
     except TeachingError as exc:
         raise _to_http(exc) from exc
     return review
+
+
+# ---------------------------------------------------------------------------
+# Teacher analytics (plan WP8, minimal)
+# ---------------------------------------------------------------------------
+
+
+def get_analytics_service(conn: Any = Depends(get_conn)):
+    from deeptutor.analytics.service import AnalyticsService
+
+    return AnalyticsService(conn)
+
+
+class InterventionRequest(BaseModel):
+    class_id: str = Field(..., min_length=1)
+    student_id: str = Field(..., min_length=1)
+    reason: str = Field(..., min_length=1, max_length=2000)
+    note: str = Field(default="", max_length=4000)
+
+
+class InterventionResolveRequest(BaseModel):
+    outcome: str = Field(default="", max_length=4000)
+
+
+@router.get("/teacher/classes/{class_id}/dashboard")
+def teacher_dashboard(class_id: str, svc=Depends(get_analytics_service)):
+    try:
+        return svc.class_overview(class_id, actor_id=_current_user_id())
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+
+
+@router.get("/teacher/classes/{class_id}/risk-flags")
+def teacher_risk_flags(class_id: str, svc=Depends(get_analytics_service)):
+    try:
+        return svc.risk_flags(class_id, actor_id=_current_user_id())
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+
+
+@router.post("/teacher/interventions")
+def record_intervention(req: InterventionRequest, svc=Depends(get_analytics_service)):
+    try:
+        intervention = svc.record_intervention(
+            req.class_id,
+            teacher_id=_current_user_id(),
+            student_id=req.student_id,
+            reason=req.reason,
+            note=req.note,
+        )
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return intervention
+
+
+@router.get("/teacher/classes/{class_id}/interventions")
+def list_interventions(class_id: str, svc=Depends(get_analytics_service)):
+    try:
+        return svc.list_interventions(class_id, actor_id=_current_user_id())
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+
+
+@router.post("/teacher/interventions/{intervention_id}/resolve")
+def resolve_intervention(
+    intervention_id: str, req: InterventionResolveRequest, svc=Depends(get_analytics_service)
+):
+    try:
+        intervention = svc.resolve_intervention(
+            intervention_id, actor_id=_current_user_id(), outcome=req.outcome
+        )
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return intervention

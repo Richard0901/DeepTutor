@@ -343,10 +343,39 @@ DROP TABLE IF EXISTS assessment_runs;
 DROP TABLE IF EXISTS rubric_versions;
 """
 
+_MIGRATION_0006_UP = """
+-- Teacher analytics (plan WP8, minimal): intervention records are
+-- persisted; risk flags are computed deterministically on read from
+-- attempts/assessments (documented deviation — a persisted risk_flags
+-- table and analytics_snapshots arrive with multi-cohort volume, WP9+).
+CREATE TABLE teacher_interventions (
+    intervention_id TEXT PRIMARY KEY,
+    class_id TEXT NOT NULL REFERENCES teaching_classes (class_id),
+    student_id TEXT NOT NULL,
+    teacher_id TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    note TEXT NOT NULL DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'resolved')),
+    outcome TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL,
+    resolved_at TEXT
+);
+
+CREATE INDEX idx_interventions_class ON teacher_interventions (class_id, status);
+CREATE INDEX idx_interventions_student ON teacher_interventions (student_id);
+"""
+
+_MIGRATION_0006_DOWN = """
+DROP INDEX IF EXISTS idx_interventions_student;
+DROP INDEX IF EXISTS idx_interventions_class;
+DROP TABLE IF EXISTS teacher_interventions;
+"""
+
 MIGRATIONS: tuple[Migration, ...] = (
     Migration(version=1, name="teaching_organization", up=_MIGRATION_0001_UP, down=_MIGRATION_0001_DOWN),
     Migration(version=2, name="clinical_case_content", up=_MIGRATION_0002_UP, down=_MIGRATION_0002_DOWN),
     Migration(version=3, name="clinical_attempts", up=_MIGRATION_0003_UP, down=_MIGRATION_0003_DOWN),
     Migration(version=4, name="virtual_patient", up=_MIGRATION_0004_UP, down=_MIGRATION_0004_DOWN),
     Migration(version=5, name="assessment_framework", up=_MIGRATION_0005_UP, down=_MIGRATION_0005_DOWN),
+    Migration(version=6, name="teacher_analytics", up=_MIGRATION_0006_UP, down=_MIGRATION_0006_DOWN),
 )
