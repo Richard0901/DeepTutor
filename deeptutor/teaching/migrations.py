@@ -184,7 +184,54 @@ DROP TABLE IF EXISTS case_versions;
 DROP TABLE IF EXISTS clinical_cases;
 """
 
+_MIGRATION_0003_UP = """
+CREATE TABLE case_attempts (
+    attempt_id TEXT PRIMARY KEY,
+    assignment_id TEXT NOT NULL REFERENCES assignments (assignment_id),
+    student_id TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'in_progress'
+        CHECK (status IN ('in_progress', 'submitted', 'reviewed')),
+    started_at TEXT NOT NULL,
+    submitted_at TEXT,
+    reviewed_at TEXT,
+    reviewer_id TEXT,
+    review_notes TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL
+);
+
+CREATE INDEX idx_case_attempts_assignment ON case_attempts (assignment_id, student_id);
+CREATE INDEX idx_case_attempts_student ON case_attempts (student_id);
+
+-- Reasoning steps are append-only: submitted attempts are locked and no
+-- row is ever rewritten (plan hard constraint #5, 事件溯源/可回放).
+CREATE TABLE reasoning_steps (
+    step_id TEXT PRIMARY KEY,
+    attempt_id TEXT NOT NULL REFERENCES case_attempts (attempt_id),
+    step_type TEXT NOT NULL CHECK (step_type IN (
+        'problem_presentation', 'differential_diagnosis', 'key_evidence',
+        'investigation', 'disposition', 'reassessment')),
+    content TEXT NOT NULL,
+    is_correct INTEGER CHECK (is_correct IN (0, 1)),
+    ai_confidence REAL,
+    reviewed_by_teacher INTEGER NOT NULL DEFAULT 0 CHECK (reviewed_by_teacher IN (0, 1)),
+    teacher_override TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+
+CREATE INDEX idx_reasoning_steps_attempt ON reasoning_steps (attempt_id);
+"""
+
+_MIGRATION_0003_DOWN = """
+DROP INDEX IF EXISTS idx_reasoning_steps_attempt;
+DROP TABLE IF EXISTS reasoning_steps;
+DROP INDEX IF EXISTS idx_case_attempts_student;
+DROP INDEX IF EXISTS idx_case_attempts_assignment;
+DROP TABLE IF EXISTS case_attempts;
+"""
+
 MIGRATIONS: tuple[Migration, ...] = (
     Migration(version=1, name="teaching_organization", up=_MIGRATION_0001_UP, down=_MIGRATION_0001_DOWN),
     Migration(version=2, name="clinical_case_content", up=_MIGRATION_0002_UP, down=_MIGRATION_0002_DOWN),
+    Migration(version=3, name="clinical_attempts", up=_MIGRATION_0003_UP, down=_MIGRATION_0003_DOWN),
 )

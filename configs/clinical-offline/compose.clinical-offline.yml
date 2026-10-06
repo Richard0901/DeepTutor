@@ -1,0 +1,68 @@
+# clinical-offline deployment compose (plan §10, minimal viable version).
+#
+# IMPORTANT: application settings are defense-in-depth only. Outbound-traffic
+# denial MUST be enforced by the host firewall / VM security group / Kubernetes
+# NetworkPolicy for every container of this stack — this file cannot provide a
+# network boundary by itself. See configs/clinical-offline/README.md.
+#
+# Build the image first (npm/apt/pip all happen at build time):
+#   docker build -t deeptutor:clinical .
+#
+# Runtime package installation is disabled (DEEPTUTOR_EXTRAS unset) and the
+# version check is turned off; the startup guard refuses to boot unless
+# data/user/settings/auth.json has {"enabled": true}.
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ollama-models:/root/.ollama
+    restart: unless-stopped
+    # Local model pull happens at image-preparation time on a connected host:
+    #   docker compose exec ollama ollama pull llama3.1:70b
+    networks:
+      - clinical-internal
+
+  deeptutor:
+    image: deeptutor:clinical
+    depends_on:
+      - ollama
+    environment:
+      DEEPTUTOR_DEPLOYMENT_MODE: clinical_offline
+      DEEPTUTOR_VERSION_CHECK_ENABLED: "0"
+      DEEPTUTOR_SANDBOX_ALLOW_SUBPROCESS: "0"
+      MINERU_ALLOW_LOCAL_MODEL_DOWNLOAD: "0"
+      PAGEINDEX_API_KEY: ""
+      # DEEPTUTOR_EXTRAS and DEEPTUTOR_APT_PACKAGES are deliberately NOT set:
+      # runtime dependency installation is prohibited in this profile.
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    networks:
+      - clinical-internal
+      # Client access goes through an edge reverse proxy on this network.
+      # Publish ports ONLY on the proxy, never on the app itself.
+      - clinical-edge
+
+  # Example edge proxy: the only service with host-published ports. Point its
+  # upstream at http://deeptutor:8000 and enforce TLS/intranet ACLs here.
+  edge-proxy:
+    image: nginx:alpine
+    ports:
+      - "8443:8443"
+    volumes:
+      - ./configs/clinical-offline/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - deeptutor
+    restart: unless-stopped
+    networks:
+      - clinical-internal
+      - clinical-edge
+
+volumes:
+  ollama-models:
+
+networks:
+  clinical-internal:
+    internal: true
+  clinical-edge: {}

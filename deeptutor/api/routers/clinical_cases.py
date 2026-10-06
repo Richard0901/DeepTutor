@@ -13,6 +13,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 
 from deeptutor.api.routers.teaching import _current_user_id, _to_http, get_conn
+from deeptutor.clinical.attempts import STEP_TYPES, AttemptService
 from deeptutor.clinical.schemas import CaseValidationError
 from deeptutor.clinical.service import ClinicalCaseService
 from deeptutor.teaching.service import TeachingError
@@ -24,6 +25,10 @@ def get_case_service(
     conn: Any = Depends(get_conn),
 ) -> ClinicalCaseService:
     return ClinicalCaseService(conn)
+
+
+def get_attempt_service(conn: Any = Depends(get_conn)) -> AttemptService:
+    return AttemptService(conn)
 
 
 class CreateCaseRequest(BaseModel):
@@ -191,3 +196,110 @@ def list_reviews(case_id: str, svc: ClinicalCaseService = Depends(get_case_servi
     except TeachingError as exc:
         raise _to_http(exc) from exc
     return [r.__dict__ for r in reviews]
+
+
+# ---------------------------------------------------------------------------
+# Student attempts and structured reasoning (plan WP4)
+# ---------------------------------------------------------------------------
+
+
+class CreateAttemptRequest(BaseModel):
+    assignment_id: str = Field(..., min_length=1)
+
+
+class AddStepRequest(BaseModel):
+    step_type: str = Field(..., pattern="^(problem_presentation|differential_diagnosis|key_evidence|investigation|disposition|reassessment)$")
+    content: str = Field(..., min_length=1, max_length=20000)
+
+
+class ReviewAttemptRequest(BaseModel):
+    notes: str = Field(default="", max_length=8000)
+    step_marks: list[dict] = Field(default_factory=list)
+
+
+@router.post("/attempts")
+def create_attempt(
+    req: CreateAttemptRequest, svc: AttemptService = Depends(get_attempt_service)
+):
+    try:
+        attempt = svc.create_attempt(req.assignment_id, student_id=_current_user_id())
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return attempt.__dict__
+
+
+@router.get("/attempts")
+def list_attempts(
+    assignment_id: str, svc: AttemptService = Depends(get_attempt_service)
+):
+    try:
+        attempts = svc.list_attempts_for_assignment(
+            assignment_id, actor_id=_current_user_id()
+        )
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return [a.__dict__ for a in attempts]
+
+
+@router.get("/attempts/{attempt_id}")
+def get_attempt(attempt_id: str, svc: AttemptService = Depends(get_attempt_service)):
+    try:
+        attempt = svc.get_attempt(attempt_id, actor_id=_current_user_id())
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return attempt.__dict__
+
+
+@router.get("/attempts/{attempt_id}/steps")
+def list_steps(attempt_id: str, svc: AttemptService = Depends(get_attempt_service)):
+    try:
+        steps = svc.list_steps(attempt_id, actor_id=_current_user_id())
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return [s.__dict__ for s in steps]
+
+
+@router.post("/attempts/{attempt_id}/steps")
+def add_step(
+    attempt_id: str, req: AddStepRequest, svc: AttemptService = Depends(get_attempt_service)
+):
+    try:
+        if req.step_type not in STEP_TYPES:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"unknown step type '{req.step_type}'",
+            )
+        step = svc.add_step(
+            attempt_id,
+            actor_id=_current_user_id(),
+            step_type=req.step_type,
+            content=req.content,
+        )
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return step.__dict__
+
+
+@router.post("/attempts/{attempt_id}/submit")
+def submit_attempt(attempt_id: str, svc: AttemptService = Depends(get_attempt_service)):
+    try:
+        attempt = svc.submit(attempt_id, actor_id=_current_user_id())
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return attempt.__dict__
+
+
+@router.post("/attempts/{attempt_id}/review")
+def review_attempt(
+    attempt_id: str, req: ReviewAttemptRequest, svc: AttemptService = Depends(get_attempt_service)
+):
+    try:
+        attempt = svc.record_review(
+            attempt_id,
+            reviewer_id=_current_user_id(),
+            notes=req.notes,
+            step_marks=req.step_marks,
+        )
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return attempt.__dict__

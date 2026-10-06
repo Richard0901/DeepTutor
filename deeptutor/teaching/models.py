@@ -126,3 +126,31 @@ class CaseReview:
     decision: str
     comments: str = ""
     created_at: str = field(default_factory=utc_now)
+
+
+@dataclass
+class CaseAttempt:
+    attempt_id: str
+    assignment_id: str
+    student_id: str
+    status: str = "in_progress"
+    started_at: str = field(default_factory=utc_now)
+    submitted_at: str | None = None
+    reviewed_at: str | None = None
+    reviewer_id: str | None = None
+    review_notes: str = ""
+    created_at: str = field(default_factory=utc_now)
+
+
+@dataclass
+class ReasoningStep:
+    step_id: str
+    attempt_id: str
+    step_type: str
+    content: str
+    is_correct: int | None = None
+    ai_confidence: float | None = None
+    reviewed_by_teacher: int = 0
+    teacher_override: str | None = None
+    created_at: str = field(default_factory=utc_now)
+    updated_at: str = field(default_factory=utc_now)

@@ -1,0 +1,26 @@
+{
+  "theme": "light",
+  "language": "zh",
+  "sidebar_description": "✨ Data Intelligence Lab @ HKU",
+  "sidebar_nav_order": {
+    "start": [
+      "/",
+      "/history",
+      "/knowledge",
+      "/notebook"
+    ],
+    "learnResearch": [
+      "/question",
+      "/solver",
+      "/research",
+      "/co_writer"
+    ]
+  },
+  "enabled_optional_tools": [
+    "brainstorm",
+    "reason",
+    "geogebra_analysis"
+  ],
+  "voice_autoplay": false,
+  "chat_response_timeout": 180
+}

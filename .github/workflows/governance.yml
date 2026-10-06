@@ -1,0 +1,72 @@
+# Governance workflow for the clinical secondary development.
+#
+# Produces the v0.1.0-governed-baseline evidence that cannot be generated
+# locally: a CycloneDX SBOM, a dependency vulnerability audit (pip-audit; it
+# is commented out in upstream pre-commit only because of a pip-api issue
+# with non-ASCII paths, which does not apply to CI runners) and a license
+# inventory. Artifacts are attached to every run on main.
+
+name: governance
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sbom-and-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install project dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Generate CycloneDX SBOM
+        run: |
+          pip install cyclonedx-bom
+          cyclonedx-py environment --output-format JSON --output-file sbom.cdx.json
+
+      - name: Dependency vulnerability audit
+        run: |
+          pip install pip-audit
+          pip-audit --format json --output pip-audit.json || \
+            echo "PIP_AUDIT_FINDINGS=true" >> "$GITHUB_ENV"
+
+      - name: License inventory
+        run: |
+          pip install pip-licenses
+          pip-licenses --format json --output-file licenses.json
+
+      - name: Summarize
+        if: always()
+        run: |
+          {
+            echo "## Governance artifacts"
+            echo "- SBOM: sbom.cdx.json"
+            echo "- Vulnerability audit: pip-audit.json (findings: ${PIP_AUDIT_FINDINGS:-false})"
+            echo "- Licenses: licenses.json"
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "${PIP_AUDIT_FINDINGS:-false}" = "true" ]; then
+            echo "::warning::pip-audit reported findings — review before release"
+          fi
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: governance-${{ github.sha }}
+          path: |
+            sbom.cdx.json
+            pip-audit.json
+            licenses.json
+          if-no-files-found: warn

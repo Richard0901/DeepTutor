@@ -651,6 +651,12 @@ def _learning_surface_for_path(
         # the router already scopes every record to the current account, so
         # all methods (including progress PATCH/POST) belong to "chat".
         ("/api/mastery-paths", "chat"),
+        # Teaching-domain endpoints (secondary development, 2026-07-24 plan):
+        # course-level RBAC is enforced inside the routers through class
+        # memberships, so learner accounts reach them under the general
+        # learner surface instead of being denied here.
+        ("/api/v1/teaching", "chat"),
+        ("/api/v1/clinical", "chat"),
     ):
         if normalized == root or normalized.startswith(f"{root}/"):
             return surface

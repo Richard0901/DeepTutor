@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "services": {
+    "llm": {
+      "active_profile_id": "llm-profile-offline-ollama",
+      "active_model_id": "llm-model-offline-ollama",
+      "profiles": [
+        {
+          "id": "llm-profile-offline-ollama",
+          "name": "Ollama（本地）",
+          "binding": "custom",
+          "base_url": "http://ollama:11434/v1",
+          "api_key": "",
+          "api_version": "",
+          "extra_headers": {},
+          "models": [
+            {
+              "id": "llm-model-offline-ollama",
+              "name": "llama3.1:70b",
+              "model": "llama3.1:70b",
+              "context_window": "131072",
+              "context_window_source": "manual"
+            }
+          ]
+        }
+      ]
+    },
+    "embedding": {
+      "active_profile_id": "embedding-profile-offline-ollama",
+      "active_model_id": "embedding-model-offline-ollama",
+      "profiles": [
+        {
+          "id": "embedding-profile-offline-ollama",
+          "name": "Ollama Embedding（本地）",
+          "binding": "custom",
+          "base_url": "http://ollama:11434/v1/embeddings",
+          "api_key": "",
+          "api_version": "",
+          "extra_headers": {},
+          "models": [
+            {
+              "id": "embedding-model-offline-ollama",
+              "name": "nomic-embed-text",
+              "model": "nomic-embed-text",
+              "dimension": "768",
+              "send_dimensions": false,
+              "supported_dimensions": ""
+            }
+          ]
+        }
+      ]
+    },
+    "search": {
+      "active_profile_id": "",
+      "active_model_id": "",
+      "profiles": []
+    },
+    "tts": {
+      "active_profile_id": "",
+      "active_model_id": "",
+      "profiles": []
+    },
+    "stt": {
+      "active_profile_id": "",
+      "active_model_id": "",
+      "profiles": []
+    },
+    "imagegen": {
+      "active_profile_id": "",
+      "active_model_id": "",
+      "profiles": []
+    },
+    "videogen": {
+      "active_profile_id": "",
+      "active_model_id": "",
+      "profiles": []
+    }
+  }
+}

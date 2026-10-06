@@ -22,6 +22,12 @@ export_runtime_settings_to_env(overwrite=True)
 configure_logging()
 logger = logging.getLogger(__name__)
 
+# Fail-closed gate for the clinical_offline deployment mode (secondary
+# development, plan §10 gate 4): refuses to boot with auth disabled.
+from deeptutor.deployment import enforce_offline_gates_if_configured  # noqa: E402
+
+enforce_offline_gates_if_configured()
+
 
 class _SuppressWsNoise(logging.Filter):
     """Suppress noisy uvicorn logs for WebSocket connection churn."""
@@ -527,10 +533,10 @@ from deeptutor.api.routers import (
     agent_config,
     attachments,
     auth,
-    clinical_cases,
     book,
     capabilities,
     capabilities_settings,
+    clinical_cases,
     co_writer,
     courses,
     dashboard,

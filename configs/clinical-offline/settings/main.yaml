@@ -1,0 +1,28 @@
+system:
+  language: en
+logging:
+  level: WARNING
+  save_to_file: true
+  console_output: true
+tools:
+  run_code:
+    allowed_roots:
+    - ./data/user
+  web_search:
+    enabled: false
+capabilities:
+  solve:
+    max_rounds: 12
+    max_replans: 2
+  research:
+    researching:
+      note_agent_mode: auto
+      tool_timeout: 60
+      tool_max_retries: 2
+      paper_search_years_limit: 3
+  question:
+    exploring:
+      max_iterations: 8
+      tool_summarizer:
+        enabled: true
+        max_tokens: 800
