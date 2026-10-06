@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { SidebarShell } from "@/components/sidebar/SidebarShell";
 import { reconcileUnread } from "@/lib/session-unread";
 import { LogoutButton } from "@/components/auth/LogoutButton";
+import { TeachingLinks } from "@/components/teaching/TeachingLinks";
 import { AdminLink } from "@/components/auth/AdminLink";
 import { ProfileLink } from "@/components/auth/ProfileLink";
 import { useChatStateAdapter } from "@/features/chat/ChatStateAdapter";
@@ -251,6 +252,7 @@ export default function WorkspaceSidebar() {
       onOrganizeSession={handleOrganizeSession}
       footerSlot={(collapsed) => (
         <>
+          <TeachingLinks collapsed={collapsed} />
           <ProfileLink collapsed={collapsed} />
           <AdminLink collapsed={collapsed} />
           <LogoutButton collapsed={collapsed} />

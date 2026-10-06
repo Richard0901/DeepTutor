@@ -16,7 +16,10 @@ import json
 from typing import Any
 
 PHASES: tuple[str, ...] = ("initial", "history_taking", "examination", "disposition", "terminated")
-ACTION_TYPES: tuple[str, ...] = ("begin", "ask_question", "order_exam", "advance_phase", "submit_disposition")
+ACTION_TYPES: tuple[str, ...] = (
+    "begin", "ask_question", "order_exam", "advance_phase",
+    "wait", "reassess", "submit_disposition",
+)
 
 #: Default action permissions per phase (scripts may override per phase).
 #: ``advance_phase`` moves the consultation forward one phase; scripts that
@@ -69,9 +72,21 @@ class PatientScript:
     initial_vitals: dict = field(default_factory=dict)
     phase_actions: dict[str, tuple[str, ...]] = field(default_factory=dict)
     required_revelations: tuple[str, ...] = ()
+    rescue: Any | None = None  # RescueConfig when the script carries a rescue block
+
+    def initial_vitals_numeric(self) -> dict[str, int]:
+        """Numeric-only baseline vitals (prototype scripts may carry nested
+        values like blood-pressure pairs that the rescue engine ignores)."""
+        return {k: v for k, v in self.initial_vitals.items() if isinstance(v, int)}
 
     def actions_allowed(self, phase: str) -> tuple[str, ...]:
-        return self.phase_actions.get(phase, DEFAULT_PHASE_ACTIONS.get(phase, ()))
+        allowed = self.phase_actions.get(phase, DEFAULT_PHASE_ACTIONS.get(phase, ()))
+        if self.rescue is not None and phase in ("history_taking", "examination", "disposition"):
+            # Rescue scenarios allow treatment measures (carried through the
+            # exam/disposition channel) and time controls from the history
+            # phase on — 氧疗优先于检查 is exactly the behaviour under test.
+            allowed = tuple(dict.fromkeys((*allowed, "order_exam", "wait", "reassess")))
+        return allowed
 
     def content_hash(self) -> str:
         canonical = json.dumps(self.raw, ensure_ascii=False, sort_keys=True)
@@ -173,6 +188,15 @@ def load_script(config: Any) -> PatientScript:
     if not isinstance(required, list) or any(not str(t).strip() for t in required):
         raise ScriptError("required_revelations must be a list of topic names")
 
+    rescue = None
+    if "rescue" in config:
+        from deeptutor.clinical.virtual_patient.rescue import RescueConfigError, parse_rescue_config
+
+        try:
+            rescue = parse_rescue_config(config["rescue"])
+        except RescueConfigError as exc:
+            raise ScriptError(str(exc)) from exc
+
     return PatientScript(
         raw=config,
         inquiry_map=tuple(_norm_inquiry(raw_inquiries)),
@@ -182,6 +206,7 @@ def load_script(config: Any) -> PatientScript:
         initial_vitals=dict(vitals),
         phase_actions=phase_actions,
         required_revelations=tuple(str(t).strip() for t in required),
+        rescue=rescue,
     )
 
 

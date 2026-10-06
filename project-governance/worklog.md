@@ -2,6 +2,25 @@
 
 > 按日期倒序记录。每条注明涉及的工作包（WP）与证据位置。已完成事项必须有对应 commit 或文档；未完成事项如实标注。
 
+## 2026-10-07 — 侧边栏导航接入 + WP9 第一阶段：战救确定性引擎
+
+**前端（本批 commit）**：
+
+- `components/teaching/TeachingLinks.tsx`：侧边栏教学三入口（/learn 学员训练、/teach 教师看板、/academic 课程与病例），复用 AdminLink 模式（折叠态 Tooltip + 激活高亮），插入 WorkspaceSidebar footerSlot；
+- i18n：三个导航 key 按仓库惯例（英文原句为 key）加入全部 6 个 locale 的 app.json（zh/de/fr/pl/uk 译文 + en 原文），`i18n:parity` 通过。
+
+**WP9 第一阶段（战救确定性引擎，`virtual_patient/rescue.py` + migration 0007/0008）**：
+
+1. **migration 0007**：`scenario_constraints`（每病例版本的 rescue 配置快照，首次开会话时惰性登记）+ `vital_sign_samples`（会话内按事件序号采样生命体征，initial/action/reassess 三种来源）；**migration 0008**：patient_events 表 CHECK 约束扩展 wait/reassess 动作（SQLite 不能改 CHECK，按标准 copy-drop-rename 重建表，历史行保留）。
+2. **rescue 配置 schema**（patient_script.rescue 块）：time_budget_minutes 总时限、action_costs 各动作模拟耗时、deterioration 恶化检查点（after_minutes + 体征增量 + 新症状）、interventions 干预规则（动作类型 + payload 匹配 → 体征改善 + 资源消耗，默认一次性）、resources 资源池、evac_eta_minutes 后送时限。
+3. **确定性语义**：模拟时钟 = 各动作耗时之和（禁用真实时钟，保住硬约束 #5 的可回放性）；生命体征 = 初始值 + 已越过恶化检查点增量 + 已生效干预增量，纯函数 (config, 事件日志) → 状态；wait 动作按 minutes 快进；reassess 产出当前体征与症状（再评估反馈）；资源不足 → 拒绝干预效果（resource_shortage 事件）；超时预算 → 动作被拒；提交处置时产出 rescue_outcome（用时/剩余/是否赶上前送/最终体征）。
+4. **种子病例 RESP-L4-003**：高原肺水肿单伤员战救（救治优先级 + 后送时限情境），完整 rescue 配置（2 个恶化检查点、2 项救治措施、氧/药资源池、40 分钟后送窗口）；检查通道承载救治措施（氧疗/硝苯地平），与 SKILL"检查/处置事件"口径一致；rescue 脚本在问诊期即允许开检查/救治（氧疗优先于检查正是教学点）。
+5. **测试 +10**（配置校验/干预与恶化时序/资源耗尽/超时拒动作/会话视图时钟/wait+reassess 时间线/后送准时与超时两种结局/含体征的回放一致性/非 rescue 脚本拒绝 wait），全库 **97 项通过**，ruff 清洁。
+
+**范围声明**：本阶段覆盖单伤员时间-体征-资源确定性引擎；批量伤员分诊（START）、通信/后送路径约束、非单调生命体征轨迹（原型 progressionScript）属 WP9 后续增量。
+
+---
+
 ## 2026-10-06（第六批）— 前端最小可用版（五个页面）+ 150 病例库导入
 
 **前端（本批 commit，`web/`）**：

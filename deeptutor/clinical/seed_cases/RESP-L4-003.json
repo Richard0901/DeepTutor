@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "case_code": "RESP-L4-003",
+  "title": "高原肺水肿单伤员救治与后送（战救时间压力情境）",
+  "disease": "高原肺水肿",
+  "level": "L4",
+  "dimensions": {
+    "complexity": 4,
+    "diagnostic": 4,
+    "decision": 5,
+    "situational": 5
+  },
+  "dimension_rationale": {
+    "complexity": "高原特殊环境、病情进行性恶化",
+    "diagnostic": "与高原脑水肿、普通肺炎鉴别",
+    "decision": "时间压力下的救治顺序与后送时机决策",
+    "situational": "海拔 4500m 野外、后送资源受限"
+  },
+  "knowledge_points": [
+    { "code": "dx-01", "name": "高原肺水肿" },
+    { "code": "dx-02", "name": "战救分级后送" },
+    { "code": "dx-03", "name": "野战氧疗" }
+  ],
+  "content": {
+    "chief_complaint": "海拔 4500m 驻训第 3 天，呼吸困难伴咳粉红色泡沫痰 2 小时",
+    "present_illness": "（情境设定）21 岁男性战士，平原籍，进驻海拔 4500m 高原第 3 天。2 小时前开始胸闷、进行性呼吸困难，咳粉红色泡沫痰，伴头痛、乏力。战友携其至团卫生队。卫勤情况：伤员需在 40 分钟内到达直升机后送点（ETA 40 分钟），氧气瓶存量 3 单位，随队军医 1 名。",
+    "past_history": "既往体健，无慢性心肺疾病史。上高原前体检合格。",
+    "physical_examination": "T 36.8℃，P 118 次/分，R 32 次/分，BP 145/90 mmHg，SpO2 78%（吸空气）。口唇发绀，双肺满布湿啰音及哮鸣音，心界不大，心率 118 次/分，律齐。呈急性重病容，不能平卧。",
+    "auxiliary_exams": [
+      {
+        "exam_name": "高流量湿化氧疗",
+        "category": "treatment",
+        "result": "6-8L/min 高流量湿化氧疗后 10 分钟复测 SpO2 升至 88%，湿啰音略减少（现场氧疗措施）",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "硝苯地平缓释片口服",
+        "category": "treatment",
+        "result": "硝苯地平 30mg 口服降低肺动脉压（高原肺水肿现场救治药物）",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "血气分析",
+        "category": "lab",
+        "result": "pH 7.46，PaCO2 28 mmHg，PaO2 42 mmHg（吸空气）——严重低氧血症伴过度通气",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "胸片（便携）",
+        "category": "imaging",
+        "result": "双肺蝶翼状渗出影，右下肺动脉干增宽，心影不大",
+        "is_key_evidence": false
+      }
+    ],
+    "diagnosis": "高原肺水肿（HAPE，重度）——立即现场氧疗+药物治疗，按后送时限组织直升机后送至低海拔医疗点",
+    "key_evidence": [
+      "平原籍新兵进驻 4500m 第 3 天（高原肺水肿典型时限）",
+      "进行性呼吸困难、咳粉红色泡沫痰（肺水肿特征）",
+      "SpO2 78%、双肺满布湿啰音的严重低氧表现",
+      "胸片双肺蝶翼状渗出、心影不大（区别于心源性肺水肿）",
+      "后送窗口 40 分钟：救治措施必须与后送准备并行"
+    ],
+    "differential_diagnosis": [
+      "高原脑水肿：应以神经症状为主（共济失调、意识改变），本例以呼吸症状为主，但需持续评估",
+      "高原肺炎：多有发热、脓痰，本例无发热、起病急骤且与海拔相关",
+      "心源性肺水肿：年轻战士无心脏病史、心界不大，不支持"
+    ],
+    "common_errors": [
+      {
+        "error_type": "decision_rationale",
+        "errorType_note": "决策依据缺失",
+        "description": "把时间花在等待检查结果上，未在接诊同时开始氧疗",
+        "trigger_feedback": "SpO2 78% 的伤员，第一步应该是什么？"
+      },
+      {
+        "error_type": "evidence_gap",
+        "errorType_note": "证据缺环",
+        "description": "未做血气/未监测 SpO2 动态，凭外观判断病情轻重",
+        "trigger_feedback": "评价氧疗效果需要什么客观数据？"
+      },
+      {
+        "error_type": "decision_bias",
+        "errorType_note": "决策偏差",
+        "description": "留觀观望，错过 40 分钟后送窗口",
+        "trigger_feedback": "高原肺水肿的治疗核心是什么？现场能治愈吗？"
+      },
+      {
+        "error_type": "ethical_blind_spot",
+        "errorType_note": "伦理盲区",
+        "description": "未安排战友陪同与交接记录，后送途中无人观察病情",
+        "trigger_feedback": "后送途中伤员的连续观察由谁负责？"
+      }
+    ],
+    "diagnostic_pitfalls": [
+      "高原肺水肿可在进驻后 2-5 天发生，'年轻体健'不是排除依据",
+      "现场救治目标是稳定病情争取后送，不是'治愈'",
+      "氧疗是第一优先级，任何检查都不应推迟氧疗开始"
+    ],
+    "training_objectives": [
+      "掌握高原肺水肿的识别要点与发病时限",
+      "掌握'氧疗-药物-后送'的救治优先顺序",
+      "在时间与资源约束下组织救治与后送并行",
+      "完成后送交接与途中观察安排"
+    ],
+    "standard_workflow": [
+      "立即高流量湿化氧疗（不等待检查）",
+      "血气/SpO2 监测评估严重度",
+      "硝苯地平口服降低肺动脉压",
+      "联系后送、填写伤票",
+      "40 分钟内送达后送点，途中持续观察"
+    ],
+    "scoring_rubric": {
+      "maxScore": 100,
+      "dimensions": [
+        { "name": "救治优先级", "weight": 30, "criteria": "氧疗是否第一动作、是否被检查延误" },
+        { "name": "监测与评估", "weight": 20, "criteria": "SpO2/血气动态评估" },
+        { "name": "后送组织", "weight": 25, "criteria": "后送时限把握、伤票与交接" },
+        { "name": "药物使用", "weight": 15, "criteria": "硝苯地平指征与时机" },
+        { "name": "协同与文书", "weight": 10, "criteria": "战友协同、交接记录" }
+      ]
+    },
+    "patient_script": {
+      "script_version": 2,
+      "profile": { "name": "小杨", "age": 21, "gender": "男", "role": "战士" },
+      "initial_vitals": { "heartRate": 118, "respiratoryRate": 32, "systolicBP": 145, "oxygenSaturation": 78, "consciousness": 1 },
+      "inquiry_map": [
+        { "topic": "主诉", "keywords": ["怎么不好", "哪里不舒服"], "response": "军医，我喘不上气……咳出来的痰是粉红色的。", "is_key_info": true },
+        { "topic": "起病时间", "keywords": ["多久", "什么时候"], "response": "两个多小时前开始的，越来越重。", "is_key_info": true },
+        { "topic": "进驻时间", "keywords": ["高原", "海拔", "几天"], "response": "我们前天刚到 4500 的驻训点，我以前一直在平原。", "is_key_info": true },
+        { "topic": "伴随症状", "keywords": ["头痛", "其他", "还有"], "response": "头很痛，全身没劲，躺不下。", "is_key_info": false },
+        { "topic": "既往史", "keywords": ["以前", "病史", "体格"], "response": "我身体一直很好，上高原前体检全过。", "is_key_info": true }
+      ],
+      "exam_results": [
+        { "exam_name": "高流量湿化氧疗", "result_description": "6-8L/min 高流量湿化氧疗，10 分钟后复测 SpO2 88%（这是救治措施，请尽快实施）", "is_definitive": true },
+        { "exam_name": "硝苯地平缓释片口服", "result_description": "硝苯地平 30mg 口服，用于降低肺动脉压", "is_definitive": true },
+        { "exam_name": "血气分析", "result_description": "pH 7.46，PaCO2 28 mmHg，PaO2 42 mmHg（吸空气）", "is_definitive": true },
+        { "exam_name": "胸片", "result_description": "双肺蝶翼状渗出影，心影不大", "is_definitive": false }
+      ],
+      "disposition_options": [
+        {
+          "name": "边氧疗边后送：填伤票、战友陪同，立即后送",
+          "is_correct": true,
+          "feedback": "正确：高原肺水肿现场无法根治，稳定生命体征的同时必须抢后送窗口。"
+        },
+        {
+          "name": "留队观察，等症状缓解再后送",
+          "is_correct": false,
+          "feedback": "错误：HAPE 进行性恶化，现场不能治愈，等待即延误。"
+        },
+        {
+          "name": "仅口服药物，未安排氧疗与后送",
+          "is_correct": false,
+          "feedback": "错误：氧疗是第一优先级，药物不能替代。"
+        }
+      ],
+      "rescue": {
+        "time_budget_minutes": 60,
+        "evac_eta_minutes": 40,
+        "action_costs": {
+          "begin": 2, "ask_question": 3, "order_exam": 5,
+          "advance_phase": 2, "reassess": 3, "wait": 10, "submit_disposition": 5
+        },
+        "deterioration": [
+          { "after_minutes": 15, "vitals": { "oxygenSaturation": -4, "heartRate": 8 }, "symptoms": ["意识淡漠"] },
+          { "after_minutes": 30, "vitals": { "oxygenSaturation": -5, "respiratoryRate": 4 }, "symptoms": ["咯血加重"] }
+        ],
+        "interventions": [
+          { "action": "order_exam", "match": "氧疗", "vitals": { "oxygenSaturation": 10, "heartRate": -10 }, "consumes": { "oxygen": 1 } },
+          { "action": "order_exam", "match": "硝苯地平", "vitals": { "oxygenSaturation": 3 }, "consumes": { "nifedipine": 1 } }
+        ],
+        "resources": { "oxygen": 3, "nifedipine": 2 }
+      },
+      "required_revelations": ["主诉", "进驻时间"]
+    },
+    "patient_script_wp9_note": "rescue 块为 WP9 第一阶段机器可读配置：模拟时钟按动作耗时推进，生命体征由恶化检查点与干预效果确定性演化；'检查'通道内含救治措施（氧疗/药物），与 SKILL 的检查/处置事件口径一致"
+  },
+  "source": {
+    "origin": "synthetic",
+    "author": "teaching-team",
+    "note": "合成战救训练病例（非真实患者），WP9 第一阶段 rescue 引擎的可回放原型；正式使用前需医学与卫勤双审"
+  },
+  "change_note": "initial authoring with rescue config"
+}

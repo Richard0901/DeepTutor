@@ -25,6 +25,13 @@ class PatientState:
     disposition: str | None = None
     disposition_correct: bool | None = None
     terminated: bool = False
+    # Rescue overlay (WP9): simulated clock and vitals; all defaults keep
+    # non-rescue replay identical.
+    elapsed_minutes: int = 0
+    vitals: dict[str, int] = field(default_factory=dict)
+    symptoms: tuple[str, ...] = ()
+    resources_used: dict[str, int] = field(default_factory=dict)
+    interventions_taken: tuple[str, ...] = ()
 
     def to_json(self) -> dict:
         return {
@@ -34,6 +41,11 @@ class PatientState:
             "disposition": self.disposition,
             "disposition_correct": self.disposition_correct,
             "terminated": self.terminated,
+            "elapsed_minutes": self.elapsed_minutes,
+            "vitals": dict(self.vitals),
+            "symptoms": list(self.symptoms),
+            "resources_used": dict(self.resources_used),
+            "interventions_taken": list(self.interventions_taken),
         }
 
 
@@ -49,6 +61,9 @@ class Action:
             return {"exam_name": str(self.payload.get("exam_name", "")).strip()}
         if self.action_type == "submit_disposition":
             return {"option": str(self.payload.get("option", "")).strip()}
+        if self.action_type == "wait":
+            minutes = self.payload.get("minutes")
+            return {"minutes": minutes if isinstance(minutes, int) and minutes > 0 else 0}
         return {}
 
 
@@ -83,10 +98,84 @@ def apply(state: PatientState, script: PatientScript, action: Action) -> EngineO
             error=f"action '{action.action_type}' is not allowed in phase '{state.phase}'",
         )
 
+    # Rescue overlay first: the simulated clock and vitals advance for every
+    # action, and budget/resource violations reject the action outright.
+    rescue_events: list[dict] = []
+    if script.rescue is not None:
+        from deeptutor.clinical.virtual_patient.rescue import apply_rescue_step
+
+        step = apply_rescue_step(
+            script.rescue,
+            elapsed_minutes=state.elapsed_minutes,
+            vitals=dict(state.vitals or script.initial_vitals_numeric()),
+            symptoms=state.symptoms,
+            resources_used=state.resources_used,
+            interventions_taken=state.interventions_taken,
+            action_type=action.action_type,
+            payload=action.normalized_payload() | {"raw": action.payload},
+        )
+        if step["error"] is not None:
+            return EngineOutcome(state, {}, error=step["error"])
+        rescue_events = step["rescue_events"]
+        next_elapsed = step["elapsed_minutes"]
+        next_vitals = step["vitals"]
+        next_symptoms = step["symptoms"]
+        next_used = step["resources_used"]
+        next_taken = step["interventions_taken"]
+    else:
+        next_elapsed = state.elapsed_minutes
+        next_vitals = dict(state.vitals)
+        next_symptoms = state.symptoms
+        next_used = state.resources_used
+        next_taken = state.interventions_taken
+
+    def carried(**kwargs):
+        """Next state with the rescue overlay applied."""
+        return PatientState(
+            elapsed_minutes=next_elapsed,
+            vitals=next_vitals,
+            symptoms=next_symptoms,
+            resources_used=next_used,
+            interventions_taken=next_taken,
+            **kwargs,
+        )
+
+    if action.action_type == "wait":
+        return EngineOutcome(
+            carried(phase=state.phase,
+                    revealed_topics=state.revealed_topics,
+                    revealed_results=state.revealed_results),
+            {
+                "event": "time advanced",
+                "elapsed_minutes": next_elapsed,
+                "vitals": next_vitals,
+                "symptoms": list(next_symptoms),
+                "rescue_events": rescue_events,
+            },
+        )
+
+    if action.action_type == "reassess":
+        return EngineOutcome(
+            carried(phase=state.phase,
+                    revealed_topics=state.revealed_topics,
+                    revealed_results=state.revealed_results),
+            {
+                "event": "reassessment",
+                "elapsed_minutes": next_elapsed,
+                "vitals": next_vitals,
+                "symptoms": list(next_symptoms),
+                "rescue_events": rescue_events,
+            },
+        )
+
     if action.action_type == "begin":
         return EngineOutcome(
-            PatientState(phase="history_taking"),
-            {"reply": "（患者）医生，你问吧。", "event": "consultation began"},
+            carried(phase="history_taking"),
+            {
+                "reply": "（患者）医生，你问吧。",
+                "event": "consultation began",
+                "rescue_events": rescue_events,
+            },
         )
 
     if action.action_type == "advance_phase":
@@ -99,12 +188,15 @@ def apply(state: PatientState, script: PatientScript, action: Action) -> EngineO
                 state, {}, error=f"cannot advance from phase '{state.phase}'"
             )
         return EngineOutcome(
-            PatientState(
+            carried(
                 phase=next_phase,
                 revealed_topics=state.revealed_topics,
                 revealed_results=state.revealed_results,
             ),
-            {"event": f"phase advanced to '{next_phase}'"},
+            {
+                "event": f"phase advanced to '{next_phase}'",
+                "rescue_events": rescue_events,
+            },
         )
 
     if action.action_type == "ask_question":
@@ -117,7 +209,7 @@ def apply(state: PatientState, script: PatientScript, action: Action) -> EngineO
         revealed = state.revealed_topics
         reply_note = "" if topic.topic in revealed else "（新信息）"
         return EngineOutcome(
-            PatientState(
+            carried(
                 phase=state.phase,
                 revealed_topics=tuple(dict.fromkeys((*revealed, topic.topic))),
                 revealed_results=state.revealed_results,
@@ -126,6 +218,7 @@ def apply(state: PatientState, script: PatientScript, action: Action) -> EngineO
                 "reply": f"{reply_note}{topic.response}",
                 "matched_topic": topic.topic,
                 "is_key_info": topic.is_key_info,
+                "rescue_events": rescue_events,
             },
         )
 
@@ -142,7 +235,7 @@ def apply(state: PatientState, script: PatientScript, action: Action) -> EngineO
             )
         repeated = exam_name in state.revealed_results
         return EngineOutcome(
-            PatientState(
+            carried(
                 phase=state.phase,
                 revealed_topics=state.revealed_topics,
                 revealed_results=tuple(dict.fromkeys((*state.revealed_results, exam_name))),
@@ -152,6 +245,7 @@ def apply(state: PatientState, script: PatientScript, action: Action) -> EngineO
                 "result": match.result_description,
                 "is_definitive": match.is_definitive,
                 "repeat": repeated,
+                "rescue_events": rescue_events,
             },
         )
 
@@ -178,21 +272,30 @@ def apply(state: PatientState, script: PatientScript, action: Action) -> EngineO
                 error="cannot submit disposition: missing required information: "
                 + ", ".join(missing),
             )
-        return EngineOutcome(
-            PatientState(
-                phase="terminated",
-                revealed_topics=state.revealed_topics,
-                revealed_results=state.revealed_results,
-                disposition=option.name,
-                disposition_correct=option.is_correct,
-                terminated=True,
-            ),
-            {
-                "disposition": option.name,
-                "is_correct": option.is_correct,
-                "feedback": option.feedback,
-            },
+        final_state = carried(
+            phase="terminated",
+            revealed_topics=state.revealed_topics,
+            revealed_results=state.revealed_results,
+            disposition=option.name,
+            disposition_correct=option.is_correct,
+            terminated=True,
         )
+        released = {
+            "disposition": option.name,
+            "is_correct": option.is_correct,
+            "feedback": option.feedback,
+            "rescue_events": rescue_events,
+        }
+        if script.rescue is not None:
+            from deeptutor.clinical.virtual_patient.rescue import rescue_outcome
+
+            released["rescue_outcome"] = rescue_outcome(
+                script.rescue,
+                elapsed_minutes=final_state.elapsed_minutes,
+                vitals=final_state.vitals,
+                disposition_correct=option.is_correct,
+            )
+        return EngineOutcome(final_state, released)
 
     raise ScriptError(f"unknown action type '{action.action_type}'")  # pragma: no cover
 

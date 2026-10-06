@@ -106,7 +106,7 @@ def test_seed_cases_all_import_cleanly(conn):
     for case in service.list_cases():
         by_level[case.level] = by_level.get(case.level, 0) + 1
         assert case.status == "draft"  # seeds are drafts pending dual review
-    assert by_level == {"L1": 3, "L2": 3, "L3": 2, "L4": 2}
+    assert by_level == {"L1": 3, "L2": 3, "L3": 2, "L4": 3}
 
 
 @pytest.mark.skipif(not SEED_CASES.is_dir(), reason="seed cases not present")

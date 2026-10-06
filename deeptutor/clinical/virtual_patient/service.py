@@ -107,6 +107,7 @@ class PatientSessionService:
             (attempt["assignment_id"],),
         ).fetchone()["case_id"]
         script, script_hash = self._script_for_case(case_id)
+        self._ensure_scenario_constraints(case_id)
         session_id = _uuid()
         now = utc_now()
         self._conn.execute(
@@ -117,8 +118,65 @@ class PatientSessionService:
             """,
             (session_id, attempt_id, case_id, actor_id, script_hash, now, now),
         )
+        if script.rescue is not None:
+            import json as _json
+
+            self._conn.execute(
+                """
+                INSERT INTO vital_sign_samples (sample_id, session_id, seq, elapsed_minutes,
+                                                vitals_json, source, trigger, created_at)
+                VALUES (?, ?, 0, 0, ?, 'initial', 'session start', ?)
+                """,
+                (
+                    _uuid(),
+                    session_id,
+                    _json.dumps(script.initial_vitals_numeric(), ensure_ascii=False),
+                    now,
+                ),
+            )
         self._conn.commit()
         return self.get_session(session_id, actor_id=actor_id)
+
+    def _ensure_scenario_constraints(self, case_id: str) -> None:
+        """Snapshot the case version's rescue config into scenario_constraints
+        (idempotent per case version; a queryable index of rescue cases)."""
+        row = self._conn.execute(
+            """
+            SELECT cc.current_version_id, cv.content_json FROM clinical_cases cc
+            JOIN case_versions cv ON cv.version_id = cc.current_version_id
+            WHERE cc.case_id = ?
+            """,
+            (case_id,),
+        ).fetchone()
+        if row is None:
+            return
+        existing = self._conn.execute(
+            "SELECT 1 FROM scenario_constraints WHERE case_version_id = ?",
+            (row["current_version_id"],),
+        ).fetchone()
+        if existing is not None:
+            return
+        from deeptutor.clinical.virtual_patient.script import script_from_content
+
+        script = script_from_content(json.loads(row["content_json"]).get("content", {}))
+        if script is None or script.rescue is None:
+            return
+        import json as _json
+
+        self._conn.execute(
+            """
+            INSERT OR IGNORE INTO scenario_constraints (constraint_id, case_id, case_version_id,
+                                                        constraint_json, created_at)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (
+                _uuid(),
+                case_id,
+                row["current_version_id"],
+                _json.dumps(script.rescue.content_hash_input(), ensure_ascii=False),
+                utc_now(),
+            ),
+        )
 
     def perform_action(self, session_id: str, *, actor_id: str, action: Action) -> dict:
         row = self._session_row(session_id)
@@ -172,6 +230,24 @@ class PatientSessionService:
                 session_id,
             ),
         )
+        if script.rescue is not None:
+            self._conn.execute(
+                """
+                INSERT INTO vital_sign_samples (sample_id, session_id, seq, elapsed_minutes,
+                                                vitals_json, source, trigger, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    _uuid(),
+                    session_id,
+                    seq,
+                    outcome.next_state.elapsed_minutes,
+                    json.dumps(outcome.next_state.vitals, ensure_ascii=False),
+                    "reassess" if action.action_type == "reassess" else "action",
+                    action.action_type,
+                    now,
+                ),
+            )
         self._conn.commit()
         return {
             "session_id": session_id,
@@ -193,7 +269,7 @@ class PatientSessionService:
         outcome = None
         if row["outcome_json"]:
             outcome = json.loads(row["outcome_json"])
-        return {
+        response = {
             "session_id": row["session_id"],
             "attempt_id": row["attempt_id"],
             "case_id": row["case_id"],
@@ -208,6 +284,17 @@ class PatientSessionService:
             "started_at": row["started_at"],
             "terminated_at": row["terminated_at"],
         }
+        if script.rescue is not None:
+            response["rescue"] = {
+                "elapsed_minutes": state.elapsed_minutes,
+                "time_budget_minutes": script.rescue.time_budget_minutes,
+                "time_remaining_minutes": script.rescue.time_budget_minutes - state.elapsed_minutes,
+                "vitals": state.vitals or script.initial_vitals_numeric(),
+                "symptoms": list(state.symptoms),
+                "resources_used": state.resources_used,
+                "evac_eta_minutes": script.rescue.evac_eta_minutes,
+            }
+        return response
 
     def list_events(self, session_id: str, *, actor_id: str) -> list[dict]:
         self.get_session(session_id, actor_id=actor_id)  # visibility gate

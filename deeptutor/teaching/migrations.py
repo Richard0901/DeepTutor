@@ -371,6 +371,84 @@ DROP INDEX IF EXISTS idx_interventions_class;
 DROP TABLE IF EXISTS teacher_interventions;
 """
 
+_MIGRATION_0007_UP = """
+-- Rescue scenario engine (plan WP9, first increment): a deterministic
+-- simulated clock, vital-sign evolution and resource constraints layered
+-- over the virtual patient state machine. Vitals are a pure function of
+-- (script, event log) — same replay guarantees as the base engine.
+CREATE TABLE scenario_constraints (
+    constraint_id TEXT PRIMARY KEY,
+    case_id TEXT NOT NULL REFERENCES clinical_cases (case_id),
+    case_version_id TEXT NOT NULL REFERENCES case_versions (version_id),
+    constraint_json TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    UNIQUE (case_version_id)
+);
+
+CREATE TABLE vital_sign_samples (
+    sample_id TEXT PRIMARY KEY,
+    session_id TEXT NOT NULL REFERENCES patient_sessions (session_id),
+    seq INTEGER NOT NULL,
+    elapsed_minutes INTEGER NOT NULL,
+    vitals_json TEXT NOT NULL,
+    source TEXT NOT NULL DEFAULT 'action' CHECK (source IN ('initial', 'action', 'reassess')),
+    trigger TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL,
+    UNIQUE (session_id, seq)
+);
+"""
+
+_MIGRATION_0007_DOWN = """
+DROP TABLE IF EXISTS vital_sign_samples;
+DROP TABLE IF EXISTS scenario_constraints;
+"""
+
+_MIGRATION_0008_UP = """
+-- Widen the patient event action vocabulary for the rescue engine
+-- (wait/reassess). SQLite cannot alter a CHECK constraint, so the table is
+-- rebuilt in the standard copy-drop-rename way; rows are carried over.
+CREATE TABLE patient_events_rebuilt (
+    event_id TEXT PRIMARY KEY,
+    session_id TEXT NOT NULL REFERENCES patient_sessions (session_id),
+    seq INTEGER NOT NULL,
+    action_type TEXT NOT NULL CHECK (action_type IN (
+        'begin', 'ask_question', 'order_exam', 'advance_phase',
+        'wait', 'reassess', 'submit_disposition')),
+    payload_json TEXT NOT NULL,
+    released_json TEXT NOT NULL,
+    phase_after TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    UNIQUE (session_id, seq)
+);
+
+INSERT INTO patient_events_rebuilt SELECT * FROM patient_events;
+
+DROP TABLE patient_events;
+
+ALTER TABLE patient_events_rebuilt RENAME TO patient_events;
+"""
+
+_MIGRATION_0008_DOWN = """
+CREATE TABLE patient_events_pre_rescue (
+    event_id TEXT PRIMARY KEY,
+    session_id TEXT NOT NULL REFERENCES patient_sessions (session_id),
+    seq INTEGER NOT NULL,
+    action_type TEXT NOT NULL CHECK (action_type IN (
+        'begin', 'ask_question', 'order_exam', 'advance_phase', 'submit_disposition')),
+    payload_json TEXT NOT NULL,
+    released_json TEXT NOT NULL,
+    phase_after TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    UNIQUE (session_id, seq)
+);
+
+INSERT INTO patient_events_pre_rescue SELECT * FROM patient_events;
+
+DROP TABLE patient_events;
+
+ALTER TABLE patient_events_pre_rescue RENAME TO patient_events;
+"""
+
 MIGRATIONS: tuple[Migration, ...] = (
     Migration(version=1, name="teaching_organization", up=_MIGRATION_0001_UP, down=_MIGRATION_0001_DOWN),
     Migration(version=2, name="clinical_case_content", up=_MIGRATION_0002_UP, down=_MIGRATION_0002_DOWN),
@@ -378,4 +456,6 @@ MIGRATIONS: tuple[Migration, ...] = (
     Migration(version=4, name="virtual_patient", up=_MIGRATION_0004_UP, down=_MIGRATION_0004_DOWN),
     Migration(version=5, name="assessment_framework", up=_MIGRATION_0005_UP, down=_MIGRATION_0005_DOWN),
     Migration(version=6, name="teacher_analytics", up=_MIGRATION_0006_UP, down=_MIGRATION_0006_DOWN),
+    Migration(version=7, name="rescue_engine", up=_MIGRATION_0007_UP, down=_MIGRATION_0007_DOWN),
+    Migration(version=8, name="rescue_event_actions", up=_MIGRATION_0008_UP, down=_MIGRATION_0008_DOWN),
 )

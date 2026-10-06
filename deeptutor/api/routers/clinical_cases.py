@@ -314,7 +314,7 @@ class CreateSessionRequest(BaseModel):
 
 
 class PatientActionRequest(BaseModel):
-    action_type: str = Field(..., pattern="^(begin|ask_question|order_exam|advance_phase|submit_disposition)$")
+    action_type: str = Field(..., pattern="^(begin|ask_question|order_exam|advance_phase|wait|reassess|submit_disposition)$")
     text: str = Field(default="", max_length=2000)
     exam_name: str = Field(default="", max_length=200)
     option: str = Field(default="", max_length=200)
