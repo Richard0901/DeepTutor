@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "case_code": "RESP-L1-002",
+  "title": "原发性自发性气胸（突发胸痛伴呼吸困难）",
+  "disease": "自发性气胸",
+  "level": "L1",
+  "dimensions": {
+    "complexity": 2,
+    "diagnostic": 2,
+    "decision": 2,
+    "situational": 1
+  },
+  "dimension_rationale": {
+    "complexity": "单一系统急症，症状典型但需与胸膜疾病基本鉴别",
+    "diagnostic": "典型三联征，胸片即可确诊",
+    "decision": "按首选处理路径决策，干扰项少",
+    "situational": "普通急诊环境"
+  },
+  "knowledge_points": [
+    { "code": "dx-01", "name": "自发性气胸" },
+    { "code": "dx-02", "name": "张力性气胸" }
+  ],
+  "content": {
+    "chief_complaint": "突发右侧胸痛伴呼吸困难 4 小时",
+    "present_illness": "患者为 19 岁男性大学生，瘦高体型。4 小时前打篮球时突发右侧针刺样胸痛，随后出现进行性呼吸困难，伴刺激性干咳，无咯血、无发热、无外伤史。为求进一步诊治来急诊。",
+    "past_history": "既往体健，无肺部疾病史。吸烟 2 年，约 10 支/日。否认家族类似疾病史。",
+    "physical_examination": "T 36.8℃，P 98 次/分，R 24 次/分，BP 122/76 mmHg，SpO2 93%（未吸氧）。气管居中。右侧胸廓饱满，呼吸运动减弱，触觉语颤消失，右肺叩诊呈鼓音，听诊右肺呼吸音消失。左肺未见异常。心率 98 次/分，律齐。",
+    "auxiliary_exams": [
+      {
+        "exam_name": "胸部X线（立位）",
+        "category": "imaging",
+        "result": "右侧肺野中外带可见弧形透亮带，其内无肺纹理，右肺组织压缩约 35%，纵隔居中",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "血常规",
+        "category": "lab",
+        "result": "WBC 7.8×10^9/L，NEUT% 65%，未见异常",
+        "is_key_evidence": false
+      },
+      {
+        "exam_name": "心电图",
+        "category": "function",
+        "result": "窦性心动过速，未见 ST-T 改变",
+        "is_key_evidence": false
+      }
+    ],
+    "diagnosis": "右侧原发性自发性气胸（压缩约 35%）",
+    "key_evidence": [
+      "瘦高青年男性，突发针刺样胸痛伴进行性呼吸困难",
+      "右侧呼吸运动减弱、语颤消失、叩诊鼓音、呼吸音消失（气胸典型体征）",
+      "胸片示右肺压缩约 35%，外带弧形透亮带无肺纹理"
+    ],
+    "differential_diagnosis": [
+      "急性心肌梗死/心源性胸痛：本例为青年男性，心电图无 ST-T 改变，胸痛与呼吸相关，暂不支持",
+      "肺栓塞：无长期卧床、制动、下肢深静脉血栓等危险因素，D-二聚体可作为排除手段",
+      "胸膜炎：多有发热、感染史，胸痛随呼吸加重但常伴胸膜摩擦音，胸片无气胸带"
+    ],
+    "common_errors": [
+      {
+        "error_type": "differential_exclusion",
+        "description": "未鉴别张力性气胸的征象，未评估血流动力学稳定性",
+        "trigger_feedback": "如果这位患者出现颈静脉怒张、气管向对侧移位、血压下降，你首先应该做什么？"
+      },
+      {
+        "error_type": "evidence_gap",
+        "description": "未行胸部影像学检查即凭听诊下诊断",
+        "trigger_feedback": "气胸的确诊依据是什么？体格检查能替代影像吗？"
+      },
+      {
+        "error_type": "decision_rationale",
+        "description": "对压缩 35% 的稳定性气胸直接选择胸腔闭式引流，未考虑首选穿刺抽气",
+        "trigger_feedback": "对于稳定的小-中量原发性自发性气胸，指南推荐的首选处理是什么？"
+      }
+    ],
+    "diagnostic_pitfalls": [
+      "小量气胸体征可不明显，仰卧位胸片可漏诊，疑诊时应拍立位或呼气相胸片",
+      "张力性气胸是临床诊断，不能等待影像学确认再处理",
+      "瘦高青年突发胸痛，即使症状轻微也应警惕气胸"
+    ],
+    "training_objectives": [
+      "掌握自发性气胸的典型症状与体征（呼吸运动减弱、语颤消失、鼓音、呼吸音消失）",
+      "掌握气胸的确诊方法与胸片判读",
+      "能识别张力性气胸的危险征象并说出紧急处理原则（立即胸腔穿刺减压）",
+      "了解稳定性原发性自发性气胸的处理选择（观察、穿刺抽气、闭式引流的适应证）"
+    ],
+    "standard_workflow": [
+      "问诊（起病缓急、诱因、胸痛性质、呼吸困难程度）",
+      "体格检查（气管位置、胸廓、语颤、叩诊、听诊、生命体征）",
+      "立位胸片确诊并评估压缩程度",
+      "判断稳定性：稳定→穿刺抽气/观察；张力性→立即穿刺减压",
+      "治疗后复查胸片评估复张情况"
+    ],
+    "scoring_rubric": {
+      "maxScore": 100,
+      "dimensions": [
+        { "name": "病史采集完整性", "weight": 20, "criteria": "起病诱因、胸痛性质、呼吸困难程度、吸烟史" },
+        { "name": "体格检查规范性", "weight": 25, "criteria": "四步胸部查体是否完整，是否评估生命体征与血流动力学" },
+        { "name": "检查选择合理性", "weight": 15, "criteria": "立位胸片为确诊手段，是否不必要地开具大量检查" },
+        { "name": "诊断准确性", "weight": 20, "criteria": "气胸诊断与压缩程度评估、是否识别张力性气胸征象" },
+        { "name": "处置合理性", "weight": 20, "criteria": "处理选择是否符合稳定/不稳定分层原则" }
+      ]
+    }
+  },
+  "source": {
+    "origin": "synthetic",
+    "author": "teaching-team",
+    "note": "合成教学病例（非真实患者），仅用于平台开发与流程验证，正式使用前需医学双审（D1/D2 决策签字后按标准入库）"
+  },
+  "change_note": "initial authoring"
+}

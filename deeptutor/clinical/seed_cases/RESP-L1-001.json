@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "case_code": "RESP-L1-001",
+  "title": "社区获得性肺炎（典型）",
+  "disease": "社区获得性肺炎",
+  "level": "L1",
+  "dimensions": {
+    "complexity": 2,
+    "diagnostic": 2,
+    "decision": 2,
+    "situational": 1
+  },
+  "knowledge_points": [
+    {
+      "code": "dx-01",
+      "name": "社区获得性肺炎"
+    }
+  ],
+  "content": {
+    "chief_complaint": "发热、咳嗽、咳痰 3 天",
+    "present_illness": "患者 3 天前受凉后出现发热，体温最高 38.8℃，伴畏寒，咳嗽，咳黄脓痰，量中等，无咯血。伴全身乏力、肌肉酸痛。自服「感冒药」（具体不详）效果不佳。无胸闷、气促，无胸痛。",
+    "past_history": "既往体健，无高血压、糖尿病等慢性病史。无吸烟饮酒史。",
+    "physical_examination": "T 38.6℃，P 94 次/分，R 20 次/分，BP 120/80 mmHg。神清，精神可。咽部充血，双肺呼吸音粗，右下肺可闻及湿啰音。心率 94 次/分，律齐。腹软，无压痛。",
+    "auxiliary_exams": [
+      {
+        "exam_name": "血常规",
+        "category": "lab",
+        "result": "WBC 15.2×10^9/L，NEUT% 82%，CRP 85 mg/L",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "胸部X线",
+        "category": "imaging",
+        "result": "右下肺斑片状渗出影",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "痰培养",
+        "category": "lab",
+        "result": "肺炎链球菌生长",
+        "is_key_evidence": true
+      }
+    ],
+    "diagnosis": "社区获得性肺炎（右下肺）",
+    "key_evidence": [
+      "发热伴咳嗽咳痰",
+      "右下肺湿啰音",
+      "血白细胞及CRP升高",
+      "胸部X线右下肺渗出影",
+      "痰培养肺炎链球菌"
+    ],
+    "differential_diagnosis": [
+      "肺结核（起病较缓，有盗汗、乏力等结核中毒症状）",
+      "肺癌（常有刺激性干咳、咯血，影像表现不同）"
+    ],
+    "common_errors": [
+      {
+        "error_type": "differential_exclusion",
+        "description": "未做鉴别直接下肺炎诊断",
+        "trigger_feedback": "患者有发热和呼吸道症状，除了肺炎还有哪些可能？请考虑一下其他常见疾病。",
+        "prototype_error_type": "differential_omission"
+      },
+      {
+        "error_type": "decision_rationale",
+        "description": "一上来就开胸部CT",
+        "trigger_feedback": "在没有明确指征前，可以先做更基础的检查。胸片是初筛的首选。",
+        "prototype_error_type": "over_testing"
+      }
+    ],
+    "diagnostic_pitfalls": [
+      "早期胸片可正常，不要因胸片阴性完全排除肺炎",
+      "老年患者可能不典型发热"
+    ],
+    "training_objectives": [
+      "掌握肺炎的典型临床表现",
+      "能正确解读血常规、CRP、胸片",
+      "能规范采集病史和体格检查"
+    ],
+    "standard_workflow": [
+      "详细问诊（主诉、现病史、既往史）",
+      "体格检查（生命体征、肺部听诊）",
+      "血常规+CRP",
+      "胸部X线",
+      "痰培养+药敏",
+      "根据病原学结果选用抗生素"
+    ],
+    "scoring_rubric": {
+      "maxScore": 100,
+      "dimensions": [
+        {
+          "name": "病史采集完整性",
+          "weight": 20,
+          "criteria": "是否采集了主诉、现病史、既往史、个人史"
+        },
+        {
+          "name": "体格检查规范性",
+          "weight": 15,
+          "criteria": "是否完成生命体征、肺部听诊等重点检查"
+        },
+        {
+          "name": "检查选择合理性",
+          "weight": 20,
+          "criteria": "是否选择了血常规、CRP、胸片等基础检查"
+        },
+        {
+          "name": "诊断准确性",
+          "weight": 25,
+          "criteria": "诊断是否正确、鉴别诊断是否完整"
+        },
+        {
+          "name": "推理逻辑性",
+          "weight": 20,
+          "criteria": "推理链条是否完整、证据引用是否准确"
+        }
+      ]
+    }
+  },
+  "source": {
+    "origin": "synthetic",
+    "author": "mock-dev",
+    "note": "converted from ai-companion prototype case mock-l1-001; error_type codes mapped to the working eight-type dictionary pending D2 sign-off (['differential_omission', 'over_testing'])"
+  },
+  "change_note": "converted from ai-companion prototype"
+}

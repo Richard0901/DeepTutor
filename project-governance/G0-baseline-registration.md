@@ -41,7 +41,7 @@
 
 - [ ] SBOM（依赖清单与许可证扫描）
 - [ ] `clinical-offline` 离线配置清单（云模型/外部搜索/MCP 等默认关闭）
-- [ ] 教学领域数据库 migration 骨架（WP2 首版）
+- [x] 教学领域数据库 migration 骨架（WP2 首版，2026-10-06 完成，见 `worklog.md`）
 - [ ] 决策清单（见 `decisions-register.md`）中 D1–D4 完成签字
 
 ## 6. G0 尚未关闭的其他闸门事项

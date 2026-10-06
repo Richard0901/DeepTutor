@@ -1,0 +1,338 @@
+{
+  "schema_version": 1,
+  "case_code": "RESP-L4-001",
+  "title": "高原寒区批量胸肺伤员分诊与决策（战救情境）",
+  "disease": "胸肺战创伤（高原批量伤员）",
+  "level": "L4",
+  "dimensions": {
+    "complexity": 5,
+    "diagnostic": 4,
+    "decision": 5,
+    "situational": 5
+  },
+  "knowledge_points": [
+    {
+      "code": "dx-01",
+      "name": "张力性气胸"
+    },
+    {
+      "code": "dx-02",
+      "name": "连枷胸"
+    },
+    {
+      "code": "dx-03",
+      "name": "血胸"
+    },
+    {
+      "code": "dx-04",
+      "name": "胸壁穿透伤"
+    },
+    {
+      "code": "dx-05",
+      "name": "失血性休克"
+    }
+  ],
+  "content": {
+    "chief_complaint": "批量伤员到达前线救护所：3 名胸肺外伤伤员，10 分钟内完成初步分诊",
+    "present_illness": "场景：海拔 4200m 高原、寒区（-15℃）、前线救护所接收 3 名爆炸伤伤员，事故后 2 小时到达。\n救护所现有：1 名军医（学员扮演）+ 1 名护士 + 1 名担架员，设备仅便携超声、便携血氧仪、夹板、绷带、气管插管套装、阿托品、吗啡、止血带、抗生素、便携氧气罐（仅够 1 人 4 小时）、除颤仪（仅 1 台）。\n\n伤员 A（28 岁男性）：爆炸气浪冲击致胸闷、胸痛 30 分钟，呼吸急促。意识清，烦躁。BP 90/60 mmHg，HR 124 次/分，R 28 次/分，SpO2 84%。颈静脉怒张，左胸呼吸音减弱，叩诊鼓音。腹部无异常，四肢无明显外伤。\n\n伤员 B（35 岁男性）：胸壁穿透伤（金属碎片）30 分钟。胸壁可见 2×2cm 入口。意识清，痛苦面容。BP 100/70 mmHg，HR 108 次/分，R 24 次/分，SpO2 92%。双肺呼吸音清，未及明显湿啰音。\n\n伤员 C（22 岁女性）：胸部挤压伤伴多发肋骨骨折 20 分钟。意识模糊（呼唤能睁眼）。BP 78/50 mmHg，HR 138 次/分，R 32 次/分，SpO2 79%（吸氧后 85%）。胸壁反常呼吸，连枷胸，左胸明显塌陷。",
+    "past_history": "伤员 A：既往体健，无慢性病史。\n伤员 B：既往体健，无过敏史。\n伤员 C：既往体健，无特殊病史。",
+    "physical_examination": "伤员 A：神清，烦躁。颈静脉怒张，气管右偏。左胸呼吸音减弱，叩诊鼓音。腹部无压痛。\n伤员 B：神清，痛苦面容。左胸壁穿透伤入口 2×2cm，无活动性出血。双肺呼吸音对称。腹部无压痛。\n伤员 C：意识模糊，烦躁。呼吸急促，反常呼吸，连枷胸。左胸塌陷，皮下气肿。",
+    "auxiliary_exams": [
+      {
+        "exam_name": "FAST 超声",
+        "category": "imaging",
+        "result": "伤员 A：左胸无肺滑动征（M 型：条码征）→ 张力性气胸；伤员 B：心包无积液，胸腔无游离液；伤员 C：左胸无肺滑动征 + 大量游离液",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "血氧饱和度",
+        "category": "function",
+        "result": "伤员 A: 84%（吸氧后 88%）；伤员 B: 92%；伤员 C: 79%（吸氧后 85%）",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "生命体征",
+        "category": "function",
+        "result": "伤员 A: BP 90/60, HR 124, R 28; 伤员 B: BP 100/70, HR 108, R 24; 伤员 C: BP 78/50, HR 138, R 32",
+        "is_key_evidence": true
+      }
+    ],
+    "diagnosis": "1. 伤员 A：张力性气胸（左侧）；2. 伤员 B：胸壁穿透伤（无脏器损伤证据）；3. 伤员 C：连枷胸伴血胸、失血性休克",
+    "key_evidence": [
+      "伤员 A：颈静脉怒张 + 气管右偏 + 左胸叩诊鼓音 + 超声无肺滑动征 → 张力性气胸",
+      "伤员 B：生命体征稳定 + 穿透伤入口小 + 双肺呼吸音对称 → 暂未危及生命",
+      "伤员 C：反常呼吸 + 连枷胸 + 严重低氧 + 休克 + 超声游离液 → 危重",
+      "批量伤员场景下必须按 START 分诊原则（Simple Triage And Rapid Treatment）",
+      "资源约束：氧气、医生、设备均有限",
+      "环境：高原低氧会放大所有伤情"
+    ],
+    "differential_diagnosis": [
+      "伤员 A 鉴别：单纯血胸（无颈静脉怒张，无气管移位）/ 心脏压塞（Beck三联征：低血压、颈静脉怒张、心音遥远）",
+      "伤员 C 鉴别：单纯张力性气胸（需紧急减压）/ 大量血胸（需要输血，但现场无血源）"
+    ],
+    "common_errors": [
+      {
+        "error_type": "decision_bias",
+        "description": "按到达顺序处理，未按伤情严重度分诊",
+        "trigger_feedback": "在批量伤员场景下，你作为唯一军医，应该先处理谁？为什么？请用 START 分诊原理解释。",
+        "prototype_error_type": "improper_treatment"
+      },
+      {
+        "error_type": "decision_bias",
+        "description": "对伤员 C 仅给予吸氧，未识别需要紧急胸腔减压",
+        "trigger_feedback": "伤员 C 已经休克 + 严重低氧 + 连枷胸。你的处理顺序和紧急措施是什么？",
+        "prototype_error_type": "premature_conclusion"
+      },
+      {
+        "error_type": "symptom_attribution",
+        "description": "高原环境下未考虑低压低氧对伤情的放大作用",
+        "trigger_feedback": "海拔 4200m 的大气压约为海平面的 60%，这对伤员意味着什么？如何调整你的决策？",
+        "prototype_error_type": "concept_confusion"
+      }
+    ],
+    "diagnostic_pitfalls": [
+      "批量伤员必须先分诊再治疗，不能按到达顺序处理",
+      "张力性气胸是临床诊断，不是影像诊断 - 不能等 CT 确认",
+      "连枷胸 + 严重低氧需要正压通气 + 镇痛，不能只给氧",
+      "高原环境会显著降低机体代偿能力",
+      "资源约束下要做'伤害控制'，而不是完美修复",
+      "现场无血源时，失血性休克的处理要靠快速止血 + 限制性复苏"
+    ],
+    "training_objectives": [
+      "掌握 START 批量伤员分诊原则（红/黄/绿/黑四色标签）",
+      "识别张力性气胸的临床征象并紧急减压",
+      "掌握连枷胸的紧急处理（通气、止痛、固定）",
+      "理解资源约束下的临床决策（tactical medicine）",
+      "理解高原环境对伤情的影响",
+      "掌握'伤害控制外科'（damage control surgery）原则"
+    ],
+    "standard_workflow": [
+      "第一步（30 秒内）：现场评估 + 启动分诊",
+      "第二步：START 分诊 - 评估意识、呼吸、循环",
+      "伤员 A 标记'红色'（immediate）→ 张力性气胸 → 立即胸腔穿刺减压",
+      "伤员 C 标记'红色'（immediate）→ 评估张力性气胸？超声 → 紧急胸腔闭式引流",
+      "伤员 B 标记'黄色'（delayed）→ 包扎、观察",
+      "第三步：伤员 C 评估需不需要正压通气 → 气管插管 + 简易呼吸器",
+      "第四步：抗休克 - 止血 + 限制性液体复苏（500mL 生理盐水）",
+      "第五步：紧急后送准备（伤员 A、C），伤员 B 暂留观察",
+      "第六步：连续监测 + 重新评估"
+    ],
+    "scoring_rubric": {
+      "maxScore": 100,
+      "dimensions": [
+        {
+          "name": "分诊优先级判断",
+          "weight": 25,
+          "criteria": "是否正确应用 START 分诊原则识别红/黄/绿标签"
+        },
+        {
+          "name": "张力性气胸识别与处置",
+          "weight": 25,
+          "criteria": "是否在 1 分钟内识别并紧急减压"
+        },
+        {
+          "name": "资源约束下的决策",
+          "weight": 20,
+          "criteria": "是否在氧气、设备、人力有限时做出合理取舍"
+        },
+        {
+          "name": "高原环境因素考虑",
+          "weight": 15,
+          "criteria": "是否考虑高原低压低氧对决策的影响"
+        },
+        {
+          "name": "团队指挥与沟通",
+          "weight": 15,
+          "criteria": "是否清晰下达指令、与护士担架员有效配合"
+        }
+      ]
+    },
+    "patient_script": {
+      "caseId": "mock-l4-001",
+      "patientProfile": {
+        "name": "伤员 A（集体场景）",
+        "age": 28,
+        "gender": "M",
+        "occupation": "战士",
+        "personality": "anxious"
+      },
+      "initialVitals": {
+        "bloodPressure": [
+          90,
+          60
+        ],
+        "heartRate": 124,
+        "respiratoryRate": 28,
+        "temperature": 35.2,
+        "oxygenSaturation": 84
+      },
+      "inquiryMap": [
+        {
+          "topic": "现场总览",
+          "keywords": [
+            "现场情况",
+            "整体情况",
+            "态势",
+            "总览",
+            "汇报",
+            "介绍一下"
+          ],
+          "response": "军医你好！爆炸后 2 小时，我们从前线接收了 3 名胸肺外伤伤员。我是负责分诊的护士，伤员情况我会在你下令后一一汇报。\n\n当前态势：海拔 4200m，气温 -15℃，救护所只有你（军医）、我和一名担架员。设备仅便携超声、血氧仪、气管插管套装、氧气罐（够 1 人 4 小时）、除颤仪 1 台。",
+          "isKeyInfo": true
+        },
+        {
+          "topic": "伤员 A 状态",
+          "keywords": [
+            "伤员A",
+            "病人A",
+            "第一个伤员",
+            "A的情况"
+          ],
+          "response": "伤员 A：28 岁男性，气浪冲击伤。\n- 意识清，但烦躁不安\n- BP 90/60 mmHg，HR 124 次/分，R 28 次/分，SpO2 84%\n- 查体：颈静脉怒张，气管右偏，左胸呼吸音减弱，叩诊鼓音\n- FAST 超声：左胸无肺滑动征（M 型条码征）",
+          "isKeyInfo": true
+        },
+        {
+          "topic": "伤员 B 状态",
+          "keywords": [
+            "伤员B",
+            "病人B",
+            "第二个",
+            "穿透伤"
+          ],
+          "response": "伤员 B：35 岁男性，胸壁穿透伤（金属碎片）。\n- 入口：左胸壁 2×2cm，目前无活动性出血\n- BP 100/70 mmHg，HR 108 次/分，R 24 次/分，SpO2 92%\n- 双肺呼吸音对称、清\n- FAST 超声：心包无积液，胸腔无游离液",
+          "isKeyInfo": true
+        },
+        {
+          "topic": "伤员 C 状态",
+          "keywords": [
+            "伤员C",
+            "病人C",
+            "第三个",
+            "连枷"
+          ],
+          "response": "伤员 C：22 岁女性，胸部挤压伤伴多发肋骨骨折。\n- 意识模糊，烦躁，呼唤能睁眼\n- BP 78/50 mmHg（休克），HR 138 次/分，R 32 次/分\n- SpO2 79%（吸氧后 85%）\n- 反常呼吸，连枷胸，左胸明显塌陷，皮下气肿\n- FAST 超声：左胸无肺滑动征 + 大量游离液",
+          "isKeyInfo": true
+        },
+        {
+          "topic": "START 分诊",
+          "keywords": [
+            "分诊",
+            "START",
+            "优先级",
+            "先处理谁",
+            "红色",
+            "黄色"
+          ],
+          "response": "START 分诊四色标签：\n- 红色（immediate）：伤情危重，但立即处理可存活\n- 黄色（delayed）：伤情稳定，暂时不处理也可等待\n- 绿色（minor）：轻伤，可行走\n- 黑色（expectant）：濒死或无法挽救\n\n按 START 原则快速评估：意识、呼吸、循环、步行能力。",
+          "isKeyInfo": true
+        },
+        {
+          "topic": "张力性气胸处置",
+          "keywords": [
+            "张力性气胸",
+            "气胸怎么办",
+            "怎么处理气胸",
+            "胸穿",
+            "穿刺",
+            "减压",
+            "气胸怎么治"
+          ],
+          "response": "张力性气胸是临床急症，必须立即胸腔穿刺减压。\n\n操作要点：\n1. 部位：患侧锁骨中线第 2 肋间（推荐穿刺点）\n2. 体位：仰卧位\n3. 用物：粗针头（14-16G）+ 注射器 / 简易胸腔减压装置\n4. 听到气体喷出即减压成功\n5. 减压后接闭式引流或单向活瓣\n\n禁忌等影像确认 - 临床诊断临床处理！",
+          "isKeyInfo": true
+        },
+        {
+          "topic": "连枷胸处置",
+          "keywords": [
+            "连枷",
+            "反常呼吸",
+            "固定胸壁"
+          ],
+          "response": "连枷胸处理三联：\n1. 通气支持：正压通气是金标准（气管插管 + 简易呼吸器）\n2. 充分止痛：吗啡 / 区域阻滞（避免呼吸抑制）\n3. 胸壁固定：厚敷料加压包扎 / 正压通气内固定\n\n禁忌：不要等 CT 确认！",
+          "isKeyInfo": true
+        },
+        {
+          "topic": "高原环境影响",
+          "keywords": [
+            "高原",
+            "海拔",
+            "低氧",
+            "环境"
+          ],
+          "response": "海拔 4200m 的关键影响：\n- 大气压约为海平面 60%\n- 氧分压显著降低（PaO2 正常值约 60 mmHg）\n- 伤员的氧储备下降\n- 代偿能力降低\n- 任何呼吸/循环问题都更容易失代偿\n\n决策调整：\n- SpO2 目标应比海平面更高\n- 气胸张力发展更快\n- 抗休克要更积极",
+          "isKeyInfo": true
+        }
+      ],
+      "examResults": [
+        {
+          "examName": "FAST超声",
+          "cost": "low",
+          "turnaroundTime": "immediate",
+          "resultDescription": "伤员 A：左胸无肺滑动征（张力性气胸）；伤员 C：左胸无肺滑动征 + 大量游离液（血胸）",
+          "isDefinitive": true
+        },
+        {
+          "examName": "血氧监测",
+          "cost": "low",
+          "turnaroundTime": "immediate",
+          "resultDescription": "伤员 A: 84%；伤员 B: 92%；伤员 C: 79%（吸氧后 85%）",
+          "isDefinitive": false
+        },
+        {
+          "examName": "生命体征监测",
+          "cost": "low",
+          "turnaroundTime": "immediate",
+          "resultDescription": "伤员 A: BP 90/60, HR 124, R 28; 伤员 B: BP 100/70, HR 108, R 24; 伤员 C: BP 78/50, HR 138, R 32",
+          "isDefinitive": false
+        }
+      ],
+      "progressionScript": [
+        {
+          "triggerCondition": "伤员 A 未在 60 秒内减压",
+          "vitalsChange": {
+            "heartRate": 140,
+            "oxygenSaturation": 75
+          },
+          "newSymptoms": [
+            "意识开始模糊"
+          ],
+          "moodChange": "critical",
+          "timeToEffect": "1-2 分钟"
+        },
+        {
+          "triggerCondition": "伤员 C 未在 90 秒内开始减压",
+          "vitalsChange": {
+            "heartRate": 150,
+            "oxygenSaturation": 70,
+            "bloodPressure": [
+              60,
+              40
+            ]
+          },
+          "newSymptoms": [
+            "心跳骤停风险"
+          ],
+          "moodChange": "critical",
+          "timeToEffect": "2-3 分钟"
+        }
+      ],
+      "disclosureRules": [
+        {
+          "condition": "学员询问现场总览",
+          "infoToReveal": "伤员数量、设备清单、人员配置",
+          "requiresSpecificQuestion": false
+        },
+        {
+          "condition": "学员询问具体伤员",
+          "infoToReveal": "该伤员完整资料",
+          "requiresSpecificQuestion": false
+        }
+      ]
+    }
+  },
+  "source": {
+    "origin": "synthetic",
+    "author": "mock-dev",
+    "note": "converted from ai-companion prototype case mock-l4-001; error_type codes mapped to the working eight-type dictionary pending D2 sign-off (['concept_confusion', 'improper_treatment', 'premature_conclusion'])"
+  },
+  "change_note": "converted from ai-companion prototype"
+}

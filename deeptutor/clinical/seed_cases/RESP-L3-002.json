@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "case_code": "RESP-L3-002",
+  "title": "右上肺占位鉴别（肺癌与结核球的多维整合推理）",
+  "disease": "肺癌",
+  "level": "L3",
+  "dimensions": {
+    "complexity": 4,
+    "diagnostic": 4,
+    "decision": 3,
+    "situational": 2
+  },
+  "dimension_rationale": {
+    "complexity": "多系统信息整合，影像-肿瘤标志物-流行病学证据交叉",
+    "diagnostic": "两种疾病影像学表现存在重叠，需要概率化整合推理",
+    "decision": "涉及有创检查的选择与患者沟通",
+    "situational": "呼吸专科门诊，涉及告知与随访决策"
+  },
+  "knowledge_points": [
+    { "code": "dx-01", "name": "原发性支气管肺癌" },
+    { "code": "dx-02", "name": "肺结核球" },
+    { "code": "dx-03", "name": "肺占位性病变鉴别诊断" }
+  ],
+  "content": {
+    "chief_complaint": "体检发现右上肺占位 1 周，伴间断痰中带血 2 月",
+    "present_illness": "患者 58 岁男性。2 个月来间断出现痰中带血丝，鲜红色，量少，无发热、盗汗，无胸痛，体重 2 个月下降约 4kg。1 周前单位体检胸片提示\"右上肺阴影\"，为求进一步诊治入院。吸烟 35 年，约 25 支/日，未戒烟。父亲曾患肺癌。",
+    "past_history": "青年时期曾患\"肺结核\"，规范抗结核治疗后临床痊愈。否认糖尿病、高血压。",
+    "physical_examination": "T 36.9℃，P 84 次/分，R 18 次/分，BP 132/82 mmHg。左锁骨上可触及一枚肿大淋巴结，约 1.5×1.0cm，质韧、活动度可、无压痛。右上肺呼吸音略低，未闻及啰音。余未见异常。",
+    "auxiliary_exams": [
+      {
+        "exam_name": "胸部增强CT",
+        "category": "imaging",
+        "result": "右上叶前段见约 3.0×2.6cm 分叶状软组织占位，边缘短毛刺，可见胸膜牵拉征及血管集束征，增强后不均匀强化；纵隔 4R 组淋巴结肿大（短径约 1.2cm）",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "肿瘤标志物",
+        "category": "lab",
+        "result": "CEA 12.6 ng/mL（升高），NSE、CYFRA21-1 轻度升高",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "痰找抗酸杆菌×3",
+        "category": "lab",
+        "result": "均阴性",
+        "is_key_evidence": false
+      },
+      {
+        "exam_name": "PPD试验/γ-干扰素释放试验",
+        "category": "lab",
+        "result": "IGRA 阳性",
+        "is_key_evidence": false
+      },
+      {
+        "exam_name": "头颅MRI/全身骨扫描",
+        "category": "imaging",
+        "result": "颅内未见转移灶，骨骼未见转移征象",
+        "is_key_evidence": false
+      }
+    ],
+    "diagnosis": "右肺上叶占位，首先考虑原发性支气管肺癌（周围型，cT2aN1M0 评估待病理确认），需与结核球鉴别；确诊依赖病理（支气管镜活检或经皮肺穿刺）",
+    "key_evidence": [
+      "高龄、长期大量吸烟史、肺癌家族史（高危因素）",
+      "间断痰中带血 2 月伴进行性消瘦（报警症状）",
+      "CT 示分叶、短毛刺、胸膜牵拉、血管集束征等恶性征象",
+      "CEA 显著升高",
+      "左锁骨上肿大淋巴结（需活检明确性质）",
+      "既往结核病史+IGRA 阳性提示潜伏感染仍存在，但痰抗酸杆菌阴性"
+    ],
+    "differential_diagnosis": [
+      "结核球：多有结核病史或密切接触史，病灶多位于上叶尖后段，边缘光滑、可见钙化与卫星灶，增强扫描多不强化或环状强化；本例病灶位于前段、分叶毛刺等恶性征象明显，倾向肺癌，但 IGRA 阳性使结核球不能完全排除",
+      "炎性假瘤/机化性肺炎：可有既往感染史，边缘多光滑，强化均匀，必要时抗感染随访复查",
+      "肺转移瘤：多为多发结节，本例为单发占位且无原发肿瘤病史，不支持",
+      "良性肿瘤（错构瘤等）：边界清、可见爆米花样钙化，本例影像不符合"
+    ],
+    "common_errors": [
+      {
+        "error_type": "evidence_integration",
+        "description": "因 IGRA 阳性和结核病史即倾向结核球诊断，忽略了恶性影像征象的权重",
+        "trigger_feedback": "IGRA 阳性能区分活动性结核、潜伏感染和结核球吗？本例影像学证据指向哪边？"
+      },
+      {
+        "error_type": "decision_rationale",
+        "description": "未获得病理即开始试验性抗结核治疗并长期随访",
+        "trigger_feedback": "对高度怀疑恶性肿瘤的占位，试验性治疗的代价是什么？获取病理的途径有哪些？"
+      },
+      {
+        "error_type": "ethical_blind_spot",
+        "description": "未考虑向患者及家属充分告知病情与有创检查的必要性，忽视知情同意",
+        "trigger_feedback": "如果患者拒绝有创检查，你如何沟通检查的必要性与风险？"
+      }
+    ],
+    "diagnostic_pitfalls": [
+      "既往结核病史不能解释当前新发占位的恶性影像征象，警惕\"一元论\"思维陷阱",
+      "IGRA 阳性仅提示 MTB 感染状态，不能定位、不能定性",
+      "痰抗酸杆菌阴性不能排除结核，但本例的恶性征象权重更高",
+      "肿瘤标志物升高仅作参考，正常不能排除肺癌",
+      "确诊必须获得病理，影像诊断不能替代"
+    ],
+    "training_objectives": [
+      "掌握肺癌高危人群定义与报警症状（咯血、消瘦）",
+      "掌握周围型肺癌与结核球的影像鉴别要点（部位、边缘、强化方式、卫星灶）",
+      "建立概率化整合推理：综合流行病学、影像、标志物判断验后概率",
+      "掌握获取病理的诊断路径（支气管镜、经皮穿刺、淋巴结活检）",
+      "理解恶性肿瘤告知的伦理要求与知情同意流程"
+    ],
+    "standard_workflow": [
+      "问诊（咯血、消瘦、吸烟史、结核史、肿瘤家族史）",
+      "体格检查（浅表淋巴结、肺部）",
+      "增强CT 评估占位特征与纵隔淋巴结",
+      "排查远处转移（头颅MRI、骨扫描、腹部影像）",
+      "IGRA/痰抗酸杆菌辅助结核鉴别",
+      "支气管镜或CT引导下穿刺获取病理",
+      "多学科讨论确定分期与治疗方案"
+    ],
+    "scoring_rubric": {
+      "maxScore": 100,
+      "dimensions": [
+        { "name": "高危因素与报警症状识别", "weight": 15, "criteria": "年龄、吸烟指数、咯血、消瘦、家族史" },
+        { "name": "影像学鉴别能力", "weight": 25, "criteria": "肺癌与结核球征象的辨析与权重判断" },
+        { "name": "证据整合推理", "weight": 25, "criteria": "多源证据概率化整合，避免一元论陷阱" },
+        { "name": "诊断路径合理性", "weight": 20, "criteria": "病理获取路径选择正确" },
+        { "name": "沟通与伦理", "weight": 15, "criteria": "知情同意、告知策略、患者意愿尊重" }
+      ]
+    }
+  },
+  "source": {
+    "origin": "synthetic",
+    "author": "teaching-team",
+    "note": "合成教学病例（非真实患者），仅用于平台开发与流程验证，正式使用前需医学双审；本病例为 L3 多系统整合推理训练载体"
+  },
+  "change_note": "initial authoring"
+}

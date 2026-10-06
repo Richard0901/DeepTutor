@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "case_code": "RESP-L2-003",
+  "title": "肺血栓栓塞症（高危因素识别与初诊流程）",
+  "disease": "肺血栓栓塞症",
+  "level": "L2",
+  "dimensions": {
+    "complexity": 3,
+    "diagnostic": 3,
+    "decision": 3,
+    "situational": 1
+  },
+  "dimension_rationale": {
+    "complexity": "跨系统（呼吸+循环），症状缺乏特异性",
+    "diagnostic": "\"沉默的模仿者\"，需要概率评估（Wells）指导检查路径",
+    "decision": "核心考查点：验前概率→D-二聚体/CTPA 的分层检查决策",
+    "situational": "普通病房/急诊环境"
+  },
+  "knowledge_points": [
+    { "code": "dx-01", "name": "肺血栓栓塞症" },
+    { "code": "dx-02", "name": "深静脉血栓形成" },
+    { "code": "dx-03", "name": "Wells评分" }
+  ],
+  "content": {
+    "chief_complaint": "术后卧床 5 天，突发呼吸困难伴右下肢肿痛 3 小时",
+    "present_illness": "患者 64 岁女性，因\"胆囊结石伴急性胆囊炎\"行腹腔镜胆囊切除术后第 5 天，卧床休息中。3 小时前如厕后突发呼吸困难，伴右侧胸膜性胸痛、心悸，自觉右小腿肿胀疼痛。无咯血、无晕厥、无发热。",
+    "past_history": "高血压 8 年，口服降压药控制可。否认恶性肿瘤史。术后医嘱建议下床活动，患者因伤口疼痛活动少。",
+    "physical_examination": "T 37.0℃，P 112 次/分，R 28 次/分，BP 105/68 mmHg，SpO2 89%（未吸氧）。口唇无发绀，颈静脉无怒张。右小腿周径较左侧增粗约 3cm，Homans 征阳性，皮温稍高。右肺呼吸音清，未闻及啰音。P2 亢进，三尖瓣区可闻及收缩期杂音。双下肢无凹陷性水肿（左下肢正常）。",
+    "auxiliary_exams": [
+      {
+        "exam_name": "血气分析",
+        "category": "lab",
+        "result": "pH 7.48，PaCO2 30 mmHg，PaO2 58 mmHg（吸空气），HCO3- 22 mmol/L",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "D-二聚体",
+        "category": "lab",
+        "result": "3.8 mg/L FEU（显著升高）",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "心电图",
+        "category": "function",
+        "result": "窦性心动过速，V1-V4 T波倒置，S1Q3T3 征可疑",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "下肢静脉超声",
+        "category": "imaging",
+        "result": "右侧腘静脉至股静脉附壁血栓形成，管腔部分阻塞，探头加压不完全瘪陷",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "CTPA",
+        "category": "imaging",
+        "result": "右肺动脉主干远端及左下肺动脉分支内充盈缺损",
+        "is_key_evidence": true
+      }
+    ],
+    "diagnosis": "急性肺血栓栓塞症（中低危，sPESI 评估后分层）合并右下肢深静脉血栓形成（术后制动为危险因素）",
+    "key_evidence": [
+      "术后卧床（血栓危险因素）后突发呼吸困难、胸膜性胸痛、心悸",
+      "低氧血症（PaO2 58 mmHg）伴低碳酸血症的过度通气表现",
+      "右下肢肿痛、Homans 征阳性、周径差 3cm，超声证实深静脉血栓",
+      "D-二聚体显著升高（验前概率评估后有确诊价值）",
+      "CTPA 示双侧肺动脉充盈缺损（确诊依据）",
+      "心电图 S1Q3T3 可疑、V1-V4 T 波倒置提示右心负荷增加"
+    ],
+    "differential_diagnosis": [
+      "术后肺不张/肺部感染：无发热及脓痰，低氧程度与肺部体征不匹配，不支持",
+      "急性心肌梗死：心电图无动态 ST 段抬高/压低演变，胸痛与呼吸相关，需查心肌酶排除",
+      "术后疼痛致过度换气：不能解释持续性低氧血症与下肢体征",
+      "气胸：呼吸音清、胸片/CT 未见气胸带"
+    ],
+    "common_errors": [
+      {
+        "error_type": "symptom_attribution",
+        "description": "把术后呼吸困难笼统归因于伤口疼痛或卧床虚弱，漏诊肺栓塞",
+        "trigger_feedback": "术后患者突发呼吸困难且低氧与体征不匹配时，你应该考虑什么？"
+      },
+      {
+        "error_type": "decision_rationale",
+        "description": "未做验前概率评估直接申请全套检查，或对验前概率低者直接行 CTPA",
+        "trigger_feedback": "Wells 评分的内容是什么？D-二聚体在什么前提下才有排除价值？"
+      },
+      {
+        "error_type": "evidence_integration",
+        "description": "发现下肢肿痛但未与呼吸困难联系为同一疾病过程（静脉血栓栓塞症）",
+        "trigger_feedback": "肺栓塞和深静脉血栓是什么关系？为什么查体必须看双下肢？"
+      }
+    ],
+    "diagnostic_pitfalls": [
+      "D-二聚体敏感性高、特异性低，仅在验前概率低-中危时用于排除",
+      "单凭胸片或心电图不能确诊或排除肺栓塞",
+      "突发呼吸困难+低氧+下肢体征三联应高度警惕 VTE",
+      "术后患者是 VTE 高危人群，预防重于诊断（术后早期活动、机械/药物预防）"
+    ],
+    "training_objectives": [
+      "掌握静脉血栓栓塞症的危险因素（手术、制动、高龄、恶性肿瘤等）",
+      "掌握 Wells 评分内容与验前概率指导的检查路径（低-中危→D-二聚体→CTPA）",
+      "能识别肺栓塞的心电图、血气与下肢体征",
+      "理解 D-二聚体的适用前提与局限",
+      "了解术后 VTE 预防的基本原则"
+    ],
+    "standard_workflow": [
+      "问诊（突发呼吸困难、危险因素、下肢症状）",
+      "体格检查（生命体征、SpO2、双下肢对比、心肺听诊）",
+      "验前概率评估（Wells 评分）",
+      "血气、D-二聚体、心电图、下肢静脉超声",
+      "中-高危或 D-二聚体阳性→CTPA 确诊",
+      "危险分层（sPESI/血压/右心功能）决定抗凝或再灌注治疗"
+    ],
+    "scoring_rubric": {
+      "maxScore": 100,
+      "dimensions": [
+        { "name": "危险因素识别", "weight": 20, "criteria": "术后制动、高龄等 VTE 危险因素" },
+        { "name": "鉴别诊断能力", "weight": 20, "criteria": "与肺不张、心梗、气胸的鉴别" },
+        { "name": "检查路径合理性", "weight": 25, "criteria": "验前概率评估→分层检查，避免跳跃式检查" },
+        { "name": "诊断准确性", "weight": 20, "criteria": "PE+DVT 一元论解释、危险分层正确" },
+        { "name": "处置合理性", "weight": 15, "criteria": "危险分层指导抗凝/再灌注决策" }
+      ]
+    }
+  },
+  "source": {
+    "origin": "synthetic",
+    "author": "teaching-team",
+    "note": "合成教学病例（非真实患者），仅用于平台开发与流程验证，正式使用前需医学双审"
+  },
+  "change_note": "initial authoring"
+}

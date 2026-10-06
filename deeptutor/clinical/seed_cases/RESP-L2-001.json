@@ -1,0 +1,407 @@
+{
+  "schema_version": 1,
+  "case_code": "RESP-L2-001",
+  "title": "支气管哮喘急性发作（鉴别 COPD）",
+  "disease": "支气管哮喘",
+  "level": "L2",
+  "dimensions": {
+    "complexity": 3,
+    "diagnostic": 3,
+    "decision": 3,
+    "situational": 2
+  },
+  "knowledge_points": [
+    {
+      "code": "dx-01",
+      "name": "支气管哮喘"
+    },
+    {
+      "code": "dx-02",
+      "name": "COPD"
+    },
+    {
+      "code": "dx-03",
+      "name": "心源性哮喘"
+    },
+    {
+      "code": "dx-04",
+      "name": "肺癌"
+    }
+  ],
+  "content": {
+    "chief_complaint": "反复发作性喘息 5 年，加重 2 天",
+    "present_illness": "患者 5 年前开始反复发作喘息，伴胸闷、气促，夜间及凌晨多发，春秋季节易发。自用「沙丁胺醇气雾剂」可缓解。2 天前因接触花粉后再次出现喘息，进行性加重，夜间不能平卧。伴轻度咳嗽，少量白痰。无发热、咯血。来诊时感呼吸困难。",
+    "past_history": "既往有过敏性鼻炎史 10 年。无高血压、糖尿病。无吸烟史。",
+    "physical_examination": "T 37.2℃，P 102 次/分，R 24 次/分，BP 125/80 mmHg。神清，呼吸稍促。双肺可闻及广泛哮鸣音，呼气相延长。心率 102 次/分，律齐。无杵状指。",
+    "auxiliary_exams": [
+      {
+        "exam_name": "血常规",
+        "category": "lab",
+        "result": "WBC 8.9×10^9/L，EOS% 8%，IgE 350 IU/mL",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "肺功能",
+        "category": "function",
+        "result": "FEV1/FVC 65%，FEV1%pred 68%，支气管舒张试验阳性（FEV1改善率 15%，绝对值增加 300mL）",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "胸部X线",
+        "category": "imaging",
+        "result": "双肺过度充气征，无实质浸润",
+        "is_key_evidence": false
+      },
+      {
+        "exam_name": "血气分析",
+        "category": "lab",
+        "result": "pH 7.42，PaCO2 38 mmHg，PaO2 82 mmHg，HCO3- 24 mmol/L",
+        "is_key_evidence": false
+      }
+    ],
+    "diagnosis": "支气管哮喘急性发作（中度）",
+    "key_evidence": [
+      "反复发作性喘息，夜间和凌晨多发",
+      "接触过敏原后诱发",
+      "双肺广泛哮鸣音",
+      "肺功能：支气管舒张试验阳性",
+      "嗜酸性粒细胞和 IgE 升高"
+    ],
+    "differential_diagnosis": [
+      "COPD（多见于长期吸烟者，起病缓慢，进行性加重，支气管舒张试验阴性或改善不明显）",
+      "心源性哮喘（常有心血管病史，双肺底湿啰音，胸部X线可见肺水肿征象）",
+      "支气管肺癌（刺激性干咳、咯血、消瘦，影像表现占位）"
+    ],
+    "common_errors": [
+      {
+        "error_type": "differential_exclusion",
+        "description": "未与 COPD 进行鉴别",
+        "trigger_feedback": "这位患者的年龄和病史特点，除了哮喘，还有什么慢性气道疾病需要考虑？",
+        "prototype_error_type": "differential_omission"
+      },
+      {
+        "error_type": "evidence_gap",
+        "description": "未做肺功能检查就下诊断",
+        "trigger_feedback": "确诊哮喘的关键检查是什么？它能提供哪些确诊依据？",
+        "prototype_error_type": "evidence_omission"
+      },
+      {
+        "error_type": "decision_bias",
+        "description": "看到喘息就诊断哮喘，没有排查其他原因",
+        "trigger_feedback": "喘息不是哮喘独有的症状，还需要考虑哪些可能引起喘息的疾病？",
+        "prototype_error_type": "premature_conclusion"
+      }
+    ],
+    "diagnostic_pitfalls": [
+      "非急性期肺功能可正常，不能单次正常肺功能排除哮喘",
+      "咳嗽变异性哮喘以慢性咳嗽为主要表现，无典型喘息",
+      "注意与 COPD 的鉴别（特别是 40 岁以上患者）"
+    ],
+    "training_objectives": [
+      "掌握支气管哮喘的典型临床表现和分期",
+      "能准确进行哮喘与 COPD 的鉴别诊断",
+      "正确解读肺功能报告和支气管舒张试验",
+      "掌握哮喘急性发作的严重度评估"
+    ],
+    "standard_workflow": [
+      "详细问诊（发作特点、诱因、缓解方式、过敏史）",
+      "体格检查（生命体征、肺部听诊、有无辅助呼吸肌使用）",
+      "血常规+嗜酸性粒细胞+IgE",
+      "肺功能+支气管舒张试验",
+      "胸部X线（排除其他疾病）",
+      "血气分析（评估严重度）",
+      "根据严重度分级治疗"
+    ],
+    "scoring_rubric": {
+      "maxScore": 100,
+      "dimensions": [
+        {
+          "name": "病史采集完整性",
+          "weight": 20,
+          "criteria": "是否采集了发作特点、诱因、缓解因素、过敏史、吸烟史"
+        },
+        {
+          "name": "鉴别诊断能力",
+          "weight": 25,
+          "criteria": "是否与 COPD、心源性哮喘等疾病进行鉴别"
+        },
+        {
+          "name": "检查选择合理性",
+          "weight": 20,
+          "criteria": "是否选择了肺功能+舒张试验、血气分析等关键检查"
+        },
+        {
+          "name": "诊断准确性",
+          "weight": 20,
+          "criteria": "诊断是否确切，严重度评估是否准确"
+        },
+        {
+          "name": "治疗合理性",
+          "weight": 15,
+          "criteria": "治疗方案是否符合指南"
+        }
+      ]
+    },
+    "patient_script": {
+      "caseId": "mock-l2-001",
+      "patientProfile": {
+        "name": "张先生",
+        "age": 35,
+        "gender": "男",
+        "occupation": "公司职员",
+        "personality": "anxious"
+      },
+      "initialVitals": {
+        "bloodPressure": [
+          125,
+          80
+        ],
+        "heartRate": 102,
+        "respiratoryRate": 24,
+        "temperature": 37.2,
+        "oxygenSaturation": 94
+      },
+      "inquiryMap": [
+        {
+          "topic": "主诉",
+          "keywords": [
+            "怎么不好",
+            "哪里不舒服",
+            "怎么了",
+            "什么症状"
+          ],
+          "response": "我这两天喘得厉害，特别是晚上，躺都躺不平。以前也犯过，但没这么重。",
+          "isKeyInfo": true
+        },
+        {
+          "topic": "主诉时间",
+          "keywords": [
+            "多久",
+            "多长时间",
+            "什么时候开始"
+          ],
+          "response": "加重有两天了，前天开始觉得气紧，昨天越来越重。",
+          "isKeyInfo": false
+        },
+        {
+          "topic": "发病诱因",
+          "keywords": [
+            "诱因",
+            "什么情况",
+            "接触",
+            "过敏",
+            "花粉"
+          ],
+          "response": "我前两天去公园转了转，回来就不舒服了。我对花粉过敏。",
+          "isKeyInfo": true
+        },
+        {
+          "topic": "既往史",
+          "keywords": [
+            "以前",
+            "病史",
+            "过敏史",
+            "鼻炎"
+          ],
+          "response": "我有哮喘五年了，平时用那个沙丁胺醇喷雾。还有过敏性鼻炎十多年了。",
+          "isKeyInfo": true
+        },
+        {
+          "topic": "用药史",
+          "keywords": [
+            "用药",
+            "什么药",
+            "怎么治疗",
+            "药物"
+          ],
+          "response": "我用沙丁胺醇喷雾，以前喷一喷就好了，这两天喷了效果不好，所以来医院了。",
+          "isKeyInfo": true
+        },
+        {
+          "topic": "加重因素",
+          "keywords": [
+            "加重",
+            "什么情况更严重",
+            "诱发"
+          ],
+          "response": "晚上更严重，有时候半夜会憋醒。还有刚才走路过来也觉得喘。",
+          "isKeyInfo": false
+        },
+        {
+          "topic": "缓解因素",
+          "keywords": [
+            "缓解",
+            "什么情况好",
+            "怎么好转"
+          ],
+          "response": "以前喷了药就能好，这两天效果不好了。坐起来比躺着好一点。",
+          "isKeyInfo": false
+        },
+        {
+          "topic": "伴随症状",
+          "keywords": [
+            "还有其他",
+            "还伴有",
+            "发热",
+            "咳嗽",
+            "咳痰"
+          ],
+          "response": "有点咳嗽，少量的白痰，不费劲。没有发烧。",
+          "isKeyInfo": false
+        },
+        {
+          "topic": "吸烟史",
+          "keywords": [
+            "吸烟",
+            "抽烟",
+            "喝酒",
+            "烟酒"
+          ],
+          "response": "我不抽烟，偶尔喝点酒。",
+          "isKeyInfo": true
+        },
+        {
+          "topic": "家族史",
+          "keywords": [
+            "家族",
+            "家人",
+            "遗传"
+          ],
+          "response": "我母亲也有哮喘和过敏性鼻炎。",
+          "isKeyInfo": false
+        },
+        {
+          "topic": "职业环境",
+          "keywords": [
+            "工作",
+            "职业",
+            "环境",
+            "办公室"
+          ],
+          "response": "我在写字楼上班，环境还行，没有接触什么特殊东西。",
+          "isKeyInfo": false
+        }
+      ],
+      "examResults": [
+        {
+          "examName": "血常规",
+          "cost": "low",
+          "turnaroundTime": "immediate",
+          "resultDescription": "白细胞计数正常，嗜酸性粒细胞比例 8%，IgE 350 IU/mL，提示过敏状态",
+          "isDefinitive": false
+        },
+        {
+          "examName": "肺功能",
+          "cost": "low",
+          "turnaroundTime": "minutes",
+          "resultDescription": "FEV1/FVC 65%，FEV1%pred 68%，提示中度阻塞性通气功能障碍。吸入支气管舒张剂后 FEV1 改善率 15%，绝对值增加 300mL——支气管舒张试验阳性",
+          "isDefinitive": true
+        },
+        {
+          "examName": "胸部X线",
+          "cost": "medium",
+          "turnaroundTime": "minutes",
+          "resultDescription": "双肺过度充气征，肺纹理增粗，未见实质性浸润、占位或气胸",
+          "isDefinitive": false
+        },
+        {
+          "examName": "血气分析",
+          "cost": "low",
+          "turnaroundTime": "immediate",
+          "resultDescription": "pH 7.42，PaCO2 38 mmHg，PaO2 82 mmHg，HCO3- 24 mmol/L。轻度低氧血症，无二氧化碳潴留",
+          "isDefinitive": false,
+          "normalFindings": "正常健康人血气：pH 7.35-7.45，PaCO2 35-45 mmHg，PaO2 80-100 mmHg"
+        }
+      ],
+      "progressionScript": [
+        {
+          "triggerCondition": "学员未给予氧疗",
+          "vitalsChange": {
+            "oxygenSaturation": 90
+          },
+          "newSymptoms": [
+            "口唇发绀加重"
+          ],
+          "moodChange": "更加焦虑",
+          "timeToEffect": "15分钟"
+        },
+        {
+          "triggerCondition": "学员正确给予沙丁胺醇雾化",
+          "vitalsChange": {
+            "respiratoryRate": 20,
+            "heartRate": 95,
+            "oxygenSaturation": 96
+          },
+          "newSymptoms": [],
+          "moodChange": "略缓解",
+          "timeToEffect": "10分钟"
+        },
+        {
+          "triggerCondition": "学员未使用激素",
+          "vitalsChange": {},
+          "newSymptoms": [],
+          "moodChange": null,
+          "timeToEffect": "4小时"
+        },
+        {
+          "triggerCondition": "学员正确使用全身激素",
+          "vitalsChange": {
+            "respiratoryRate": 18
+          },
+          "newSymptoms": [
+            "喘息明显减轻"
+          ],
+          "moodChange": "缓解，开始放松",
+          "timeToEffect": "2小时"
+        },
+        {
+          "triggerCondition": "学员未作任何治疗",
+          "vitalsChange": {
+            "heartRate": 115,
+            "respiratoryRate": 30,
+            "oxygenSaturation": 85
+          },
+          "newSymptoms": [
+            "意识模糊",
+            "烦躁"
+          ],
+          "moodChange": "恐惧",
+          "timeToEffect": "30分钟"
+        }
+      ],
+      "disclosureRules": [
+        {
+          "condition": "学员问到具体症状",
+          "infoToReveal": "详细描述症状",
+          "requiresSpecificQuestion": false
+        },
+        {
+          "condition": "学员问到过敏史",
+          "infoToReveal": "花粉过敏史和过敏性鼻炎",
+          "requiresSpecificQuestion": true
+        },
+        {
+          "condition": "学员问到用药史",
+          "infoToReveal": "沙丁胺醇使用情况和效果",
+          "requiresSpecificQuestion": true
+        },
+        {
+          "condition": "学员问到家族史",
+          "infoToReveal": "母亲哮喘病史",
+          "requiresSpecificQuestion": true
+        },
+        {
+          "condition": "学员未明确问的过敏原信息",
+          "infoToReveal": "不主动透露花粉过敏",
+          "requiresSpecificQuestion": false
+        }
+      ]
+    }
+  },
+  "source": {
+    "origin": "synthetic",
+    "author": "mock-dev",
+    "note": "converted from ai-companion prototype case mock-l2-001; error_type codes mapped to the working eight-type dictionary pending D2 sign-off (['differential_omission', 'evidence_omission', 'premature_conclusion'])"
+  },
+  "change_note": "converted from ai-companion prototype"
+}

@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "case_code": "RESP-L2-002",
+  "title": "社区获得性肺炎（CURB-65 分级与治疗决策）",
+  "disease": "社区获得性肺炎",
+  "level": "L2",
+  "dimensions": {
+    "complexity": 2,
+    "diagnostic": 2,
+    "decision": 3,
+    "situational": 1
+  },
+  "dimension_rationale": {
+    "complexity": "感染性疾病，需要整合症状、体征与实验室证据",
+    "diagnostic": "常见病，但需完成病原学倾向判断",
+    "decision": "核心考查点：病情分级（CURB-65）决定门诊/住院治疗路径",
+    "situational": "普通门急诊环境"
+  },
+  "knowledge_points": [
+    { "code": "dx-01", "name": "社区获得性肺炎" },
+    { "code": "dx-02", "name": "CURB-65评分" }
+  ],
+  "content": {
+    "chief_complaint": "发热伴咳嗽咳痰 5 天，加重 1 天",
+    "present_illness": "患者 52 岁男性，工人。5 天前淋雨后出现发热，体温最高 39.2℃，伴畏寒、寒战，咳嗽咳黄色脓痰，量较多，自觉左侧胸痛，深呼吸时加重。自行口服\"退烧药和消炎药\"（具体不详）体温反复。1 天前体温升至 39.6℃，咳嗽加重，伴活动后气促，食欲差，尿量减少。",
+    "past_history": "既往 2 型糖尿病 5 年，口服二甲双胍控制，血糖控制欠佳。吸烟 20 年，约 20 支/日。无肺结核病史及接触史。",
+    "physical_examination": "T 39.0℃，P 108 次/分，R 24 次/分，BP 118/70 mmHg，SpO2 91%（未吸氧）。急性病容，口唇无发绀。左下肺触觉语颤增强，叩诊浊音，可闻及湿啰音。心率 108 次/分，律齐。",
+    "auxiliary_exams": [
+      {
+        "exam_name": "血常规",
+        "category": "lab",
+        "result": "WBC 15.6×10^9/L，NEUT% 88%，PLT 210×10^9/L",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "胸部CT",
+        "category": "imaging",
+        "result": "左下叶大片实变影，内见支气管充气征，双侧少量胸腔积液",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "CRP/PCT",
+        "category": "lab",
+        "result": "CRP 186 mg/L，PCT 2.8 ng/mL",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "随机血糖",
+        "category": "lab",
+        "result": "13.6 mmol/L",
+        "is_key_evidence": false
+      }
+    ],
+    "diagnosis": "社区获得性肺炎（左下叶；CURB-65 计分：年龄<65 否、意识清晰 否、BUN 待查、血压正常 否、SpO2 91% 是；定级需以血尿素氮结果完成，按现有证据为低-中危）",
+    "key_evidence": [
+      "急性发热、脓性痰、胸膜性胸痛的典型肺炎表现",
+      "左下肺实变体征（语颤增强、浊音、湿啰音）",
+      "白细胞、中性粒细胞、CRP、PCT 显著升高",
+      "胸片/CT 示左下叶大片实变伴支气管充气征",
+      "糖尿病为基础疾病，SpO2 91%"
+    ],
+    "differential_diagnosis": [
+      "肺结核：本例急性起病、炎性指标显著升高、实变伴胸腔积液，不支持典型结核表现，必要时查痰抗酸杆菌",
+      "急性肺脓肿：早期与肺炎难鉴别，若治疗反应差、咳大量脓臭痰需复查影像",
+      "肺癌并阻塞性肺炎：年龄>40 岁、长期吸烟，若抗感染治疗吸收不佳应复查胸片/CT 并警惕占位"
+    ],
+    "common_errors": [
+      {
+        "error_type": "decision_rationale",
+        "description": "未做病情严重度分级即决定治疗方案（门诊或住院）",
+        "trigger_feedback": "CURB-65 有哪几项？每一项如何影响你的处置地点选择？"
+      },
+      {
+        "error_type": "evidence_gap",
+        "description": "忽略了基础疾病（糖尿病）对严重度和病原学判断的影响",
+        "trigger_feedback": "合并糖尿病的肺炎患者在评估和经验性抗感染方案上有什么额外考虑？"
+      },
+      {
+        "error_type": "differential_exclusion",
+        "description": "对长期吸烟的中年肺炎患者未随访影像学排除阻塞性肺炎",
+        "trigger_feedback": "哪些肺炎患者治疗后必须复查影像？为什么？"
+      }
+    ],
+    "diagnostic_pitfalls": [
+      "CURB-65 需要血尿素氮结果，不能只凭生命体征分级",
+      "老年或免疫抑制患者肺炎表现可不典型，体温正常不能排除重症",
+      "PCT 显著升高支持细菌感染，但阴性不能完全排除",
+      "注意识别早期脓毒症表现（心率快、尿量减少、意识改变）"
+    ],
+    "training_objectives": [
+      "掌握社区获得性肺炎的临床诊断标准",
+      "掌握 CURB-65 评分各项内容及其对治疗场所（门诊/住院/ICU）的指导意义",
+      "理解经验性抗感染治疗的选择逻辑与基础疾病的影响",
+      "建立治疗后影像随访与疗效评估的意识"
+    ],
+    "standard_workflow": [
+      "问诊（诱因、痰性状、基础病、用药史）",
+      "体格检查（肺部实变体征、生命体征、SpO2）",
+      "完善 CURB-65 各项（含血尿素氮、血糖）",
+      "影像学确认（胸片/CT）",
+      "按分级决定治疗场所，经验性抗感染治疗",
+      "48-72 小时评估治疗反应，动态复查"
+    ],
+    "scoring_rubric": {
+      "maxScore": 100,
+      "dimensions": [
+        { "name": "病史采集完整性", "weight": 15, "criteria": "诱因、痰性状、基础疾病、吸烟史" },
+        { "name": "鉴别诊断能力", "weight": 20, "criteria": "与结核、肺脓肿、阻塞性肺炎的鉴别" },
+        { "name": "检查选择合理性", "weight": 20, "criteria": "血常规、CRP/PCT、影像、血尿素氮等关键检查" },
+        { "name": "严重度分级", "weight": 25, "criteria": "CURB-65 计分正确并指导治疗场所" },
+        { "name": "治疗合理性", "weight": 20, "criteria": "经验性抗感染方案、血糖管理、随访计划" }
+      ]
+    }
+  },
+  "source": {
+    "origin": "synthetic",
+    "author": "teaching-team",
+    "note": "合成教学病例（非真实患者），仅用于平台开发与流程验证，正式使用前需医学双审；CURB-65 计分依赖血尿素氮，病例诊断字段保留该提示以考查完整性"
+  },
+  "change_note": "initial authoring"
+}

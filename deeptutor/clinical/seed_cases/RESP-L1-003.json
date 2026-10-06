@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "case_code": "RESP-L1-003",
+  "title": "急性气管-支气管炎（咳嗽变异识别）",
+  "disease": "急性气管-支气管炎",
+  "level": "L1",
+  "dimensions": {
+    "complexity": 1,
+    "diagnostic": 1,
+    "decision": 1,
+    "situational": 1
+  },
+  "dimension_rationale": {
+    "complexity": "单一疾病、症状单纯",
+    "diagnostic": "临床诊断，辅助检查以排除为目的",
+    "decision": "对症治疗为主，决策路径单一",
+    "situational": "普通门诊环境"
+  },
+  "knowledge_points": [
+    { "code": "dx-01", "name": "急性气管-支气管炎" },
+    { "code": "dx-02", "name": "咳嗽变异性哮喘" }
+  ],
+  "content": {
+    "chief_complaint": "咳嗽咳痰 1 周",
+    "present_illness": "患者 28 岁女性，职员。1 周前受凉后出现鼻塞、咽痛，随后开始咳嗽，初为干咳，近 3 天转为咳少量白黏痰，偶有胸闷，无发热、无胸痛、无咯血、无夜间喘息发作。自服\"感冒药\"后鼻塞好转，但咳嗽仍明显，影响睡眠。",
+    "past_history": "既往体健。无过敏性疾病史，无吸烟史。",
+    "physical_examination": "T 36.6℃，P 78 次/分，R 16 次/分，BP 110/70 mmHg。咽部稍充血，双肺呼吸音清，未闻及干湿啰音及哮鸣音。心律齐，无杂音。",
+    "auxiliary_exams": [
+      {
+        "exam_name": "血常规",
+        "category": "lab",
+        "result": "WBC 6.2×10^9/L，NEUT% 58%，LYM% 34%，正常范围",
+        "is_key_evidence": false
+      },
+      {
+        "exam_name": "胸部X线",
+        "category": "imaging",
+        "result": "双肺纹理稍增多，未见实质浸润影",
+        "is_key_evidence": true
+      }
+    ],
+    "diagnosis": "急性气管-支气管炎",
+    "key_evidence": [
+      "急性起病，先有上呼吸道症状，随后出现咳嗽咳痰",
+      "无发热，血常规正常范围",
+      "胸片仅纹理增多，无肺实质浸润",
+      "双肺听诊未闻及干湿啰音"
+    ],
+    "differential_diagnosis": [
+      "社区获得性肺炎：应有发热、湿啰音及胸片浸润影，本例均不具备",
+      "咳嗽变异性哮喘：本例以夜间咳嗽为主或伴胸闷时需考虑，支气管激发试验可鉴别；若咳嗽超过 8 周应进一步排查",
+      "急性上呼吸道感染：本例已出现下呼吸道咳嗽咳痰症状，超出单纯上感范畴",
+      "胃食管反流性咳嗽：与体位相关、伴反酸烧心，本例无相应病史"
+    ],
+    "common_errors": [
+      {
+        "error_type": "symptom_attribution",
+        "description": "把急性支气管炎的咳嗽笼统归因为\"感冒没好\"，未做下呼吸道评估",
+        "trigger_feedback": "上呼吸道感染和急性支气管炎的分界在哪里？咳嗽持续超过多久需要重新考虑诊断？"
+      },
+      {
+        "error_type": "decision_rationale",
+        "description": "常规开具抗生素治疗",
+        "trigger_feedback": "这位患者有哪些细菌感染的证据？急性支气管炎的处理原则是什么？"
+      }
+    ],
+    "diagnostic_pitfalls": [
+      "急性支气管炎为临床诊断，胸片主要用于排除肺炎",
+      "无并发症的健康成人不建议常规使用抗生素",
+      "咳嗽超过 3 周为亚急性、超过 8 周为慢性咳嗽，需按慢性咳嗽流程排查（咳嗽变异性哮喘、上气道咳嗽综合征、胃食管反流、嗜酸粒细胞性支气管炎）"
+    ],
+    "training_objectives": [
+      "掌握急性气管-支气管炎的临床特点与诊断标准",
+      "建立\"先定性再定量\"的检查思路：以排除性检查为目的地选择辅助检查",
+      "掌握急性咳嗽的常见病因鉴别框架",
+      "理解对症治疗为主的处理原则与抗生素使用指征"
+    ],
+    "standard_workflow": [
+      "问诊（咳嗽性质、时相、伴随症状、诱因）",
+      "体格检查（重点肺部听诊）",
+      "必要时胸片排除肺炎",
+      "对症治疗（镇咳祛痰），健康教育",
+      "随访咳嗽时长，超过 8 周进入慢性咳嗽流程"
+    ],
+    "scoring_rubric": {
+      "maxScore": 100,
+      "dimensions": [
+        { "name": "病史采集完整性", "weight": 25, "criteria": "咳嗽时相与性质、伴随症状、用药史" },
+        { "name": "鉴别诊断能力", "weight": 25, "criteria": "与肺炎、咳嗽变异性哮喘等的鉴别要点" },
+        { "name": "检查选择合理性", "weight": 20, "criteria": "是否以排除为目的选择检查" },
+        { "name": "诊断准确性", "weight": 15, "criteria": "诊断依据是否充分" },
+        { "name": "治疗合理性", "weight": 15, "criteria": "对症治疗原则、抗生素指征把握" }
+      ]
+    }
+  },
+  "source": {
+    "origin": "synthetic",
+    "author": "teaching-team",
+    "note": "合成教学病例（非真实患者），仅用于平台开发与流程验证，正式使用前需医学双审"
+  },
+  "change_note": "initial authoring"
+}

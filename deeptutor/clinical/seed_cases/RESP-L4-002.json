@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "case_code": "RESP-L4-002",
+  "title": "极寒环境批量伤员：吸入性烧伤合并冻伤的战救决策",
+  "disease": "吸入性损伤",
+  "level": "L4",
+  "dimensions": {
+    "complexity": 5,
+    "diagnostic": 4,
+    "decision": 5,
+    "situational": 5
+  },
+  "dimension_rationale": {
+    "complexity": "批量伤员、多伤病复合（烧伤+冻伤+创伤），信息不完全",
+    "diagnostic": "吸入性损伤早期体征隐匿，需动态评估",
+    "decision": "资源受限下的分诊、后送顺序与气道决策冲突",
+    "situational": "极寒野外、通信受限、后送延迟的战场救治环境"
+  },
+  "knowledge_points": [
+    {
+      "code": "dx-01",
+      "name": "吸入性损伤"
+    },
+    {
+      "code": "dx-02",
+      "name": "冻伤"
+    },
+    {
+      "code": "dx-03",
+      "name": "START批量伤员分诊"
+    },
+    {
+      "code": "dx-04",
+      "name": "战伤救治分级后送"
+    }
+  ],
+  "content": {
+    "chief_complaint": "营地取暖设施爆燃，8 名人员受伤，现场组织自救互救",
+    "present_illness": "（情境设定）极寒高原驻训营地，-25℃。夜间取暖煤炉引燃邻近物资发生爆燃，室内 8 人暴露于火焰、浓烟与低温环境：3 人当场自行逃离（轻症），其余 5 人集中于临时安置点——伤员A 面部黑灰、声嘶、咳黑色痰；伤员B 昏迷倒地被同伴抬出；伤员C 双上肢冻僵于金属门框需破拆，伴胸腹部大面积烧伤；余 2 人为轻度冻伤或浅度烧伤。通信部分中断，救护车预计 40 分钟后到达第一辆，医疗组仅 2 人，氧气与补液资源有限。",
+    "past_history": "伤员健康信息不完全，无法及时获取。",
+    "physical_examination": "（可披露信息按学员问诊与查体动作释放）\n【伤员A】男性约 30 岁，面部烟灰、鼻毛烧焦、声音嘶哑、刺激性咳嗽咳黑色痰，呼吸 26 次/分，SpO2 90%，双肺可闻及干啰音，头面颈部Ⅱ度烧伤约 4%。\n【伤员B】女性约 25 岁，昏迷，呼吸 34 次/分浅快，SpO2 84%，面罩给氧不改善，颈胸部环形浅Ⅱ度烧伤，气道梗阻风险高。\n【伤员C】男性约 40 岁，双上肢冻结于门框破拆后，手指蜡白、感觉消失、腕关节僵硬，胸腹环形Ⅱ-Ⅲ度烧伤约 25%。\n【伤员D/E】轻度冻伤或浅度小面积烧伤，可自行走动，生命体征平稳。",
+    "auxiliary_exams": [
+      {
+        "exam_name": "便携血氧/生命体征监测",
+        "category": "function",
+        "result": "伤员B SpO2 84% 且进行性下降，其余按动态脚本演化",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "碳氧血红蛋白（后送途中可及）",
+        "category": "lab",
+        "result": "伤员B COHb 22%，伤员A 9%",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "纤维喉镜（后送至二级医院后）",
+        "category": "function",
+        "result": "伤员B 会厌水肿、声门下黏膜脱落（预测信息，训练用）",
+        "is_key_evidence": false
+      }
+    ],
+    "diagnosis": "批量伤员事件（8 人）：伤员A 吸入性损伤（轻-中度）合并面颈部烧伤；伤员B 重度吸入性损伤伴急性气道梗阻风险、一氧化碳中毒（立即气道干预指征）；伤员C 双上肢重度冻伤合并大面积烧伤（后送顺序与保温-复温矛盾决策）；伤员D/E 轻症",
+    "key_evidence": [
+      "密闭空间爆燃+浓烟暴露史是吸入性损伤的高危情境",
+      "声嘶、刺激性咳嗽、黑色痰、面部烧伤/鼻毛烧焦为吸入性损伤报警征象",
+      "伤员B 昏迷+进行性低氧+环形颈胸烧伤=气道梗阻 imminent，需立即气道建立",
+      "COHb 22% 证实一氧化碳中毒，高压氧后送指征",
+      "伤员C 冻结组织破拆后禁止揉搓快速复温不当操作，且与烧伤治疗存在保温-暴露矛盾",
+      "批量伤员+资源有限场景要求 START 分诊与后送排序决策"
+    ],
+    "differential_diagnosis": [
+      "单纯一氧化碳中毒 vs 吸入性损伤：两者常并存，COHb 与喉镜可分层确认",
+      "昏迷原因鉴别：CO 中毒、缺氧性脑病、创伤性脑损伤（现场有无爆震伤）",
+      "冻伤严重度分层：表皮冻融反应、感觉恢复情况决定复温策略与预后"
+    ],
+    "common_errors": [
+      {
+        "error_type": "decision_rationale",
+        "description": "按常规创伤优先级处理，未识别伤员B 的气道梗阻即将恶化的时间风险",
+        "trigger_feedback": "声音嘶哑进行性加重+环形颈胸烧伤意味着什么？等救护车到了再插管来得及吗？"
+      },
+      {
+        "error_type": "evidence_gap",
+        "description": "忽略 CO 中毒可能，未申请碳氧血红蛋白检测",
+        "trigger_feedback": "密闭空间火灾伤员出现昏迷，除了缺氧还要考虑什么？普通指氧仪能发现 CO 中毒吗？"
+      },
+      {
+        "error_type": "decision_bias",
+        "description": "对伤员C 的冻伤肢体立即用雪搓或火烤复温",
+        "trigger_feedback": "现场急救中冻伤肢体的正确复温方法是什么？哪些\"土办法\"会造成二次损伤？"
+      },
+      {
+        "error_type": "ethical_blind_spot",
+        "description": "资源有限时未按分诊原则排序，先救治呼喊最响的轻伤员",
+        "trigger_feedback": "START 分诊的分类标准是什么？当救治需求超过能力时，决策依据应该是什么？"
+      }
+    ],
+    "diagnostic_pitfalls": [
+      "吸入性损伤早期可以没有阳性体征，声嘶与咳碳末痰是最早的报警信号",
+      "普通脉搏血氧仪在 CO 中毒时读数假性正常/偏高",
+      "极寒环境下暴露躯体的烧伤伤员同时面临失温，保温与创面暴露处理存在矛盾，需分层平衡",
+      "冻结肢体禁忌雪搓、火烤、暴力揉搓，应 38-42℃ 温水快速复温（现场条件受限时以后送保温为主）",
+      "批量伤员救治以\"最大存活人数\"为目标，非单一个体最优"
+    ],
+    "training_objectives": [
+      "掌握吸入性损伤的病史警报因素与早期识别（声嘶、碳末痰、面部烧伤）",
+      "掌握气道热烧伤进展性梗阻的风险评估与预防性插管指征",
+      "掌握一氧化碳中毒的识别与 COHb 检测价值",
+      "掌握冻伤现场处置原则与禁忌操作",
+      "在资源受限条件下运用 START 分诊完成批量伤员排序与后送决策",
+      "体会战场/灾害条件下救治决策的时间-资源-伦理权衡"
+    ],
+    "standard_workflow": [
+      "现场安全评估与指挥（清点人数、报告、请求增援）",
+      "START 快速分诊（行走→绿；呼吸循环异常→红/黑）",
+      "伤员B：气道优先，准备球囊面罩/喉镜/环甲膜穿刺包，联系后送",
+      "伤员A：吸氧、动态观察声嘶与呼吸变化",
+      "伤员C：脱离冷源后保温，创面简易覆盖，禁忌不当复温",
+      "轻伤员集中安置、登记、防冻保暖",
+      "后送排序：B（红）→C（红/黄）→A（黄）→余（绿），途中持续评估",
+      "记录伤情与处置时间（战救文书）"
+    ],
+    "scoring_rubric": {
+      "maxScore": 100,
+      "dimensions": [
+        {
+          "name": "分诊与资源决策",
+          "weight": 30,
+          "criteria": "START 分类正确、后送排序合理、资源分配符合最大效益原则"
+        },
+        {
+          "name": "时间风险管理",
+          "weight": 25,
+          "criteria": "气道梗阻等时间敏感问题的预判与提前干预"
+        },
+        {
+          "name": "临床识别准确性",
+          "weight": 20,
+          "criteria": "吸入性损伤、CO 中毒、冻伤的识别完整"
+        },
+        {
+          "name": "处置规范性",
+          "weight": 15,
+          "criteria": "复温、保温、给氧等操作符合现场急救原则"
+        },
+        {
+          "name": "文书与协同",
+          "weight": 10,
+          "criteria": "伤情登记、交接与通信报告完整"
+        }
+      ]
+    },
+    "patient_script": {
+      "scenario": "cold_mass_casualty",
+      "environment": {
+        "temperature_c": -25,
+        "light": "night_headlamp",
+        "communication": "partial_outage"
+      },
+      "resources": {
+        "medics": 2,
+        "oxygen_masks": 2,
+        "iv_fluids": "limited",
+        "ambulances": "eta_40min",
+        "airway_kit": 1
+      },
+      "casualties": [
+        {
+          "id": "A",
+          "profile": "inhalation_mild",
+          "vitals": {
+            "rr": 26,
+            "spo2": 90
+          },
+          "dynamic": "stable_then_worsen_if_delayed"
+        },
+        {
+          "id": "B",
+          "profile": "inhalation_severe_airway_risk_co",
+          "vitals": {
+            "rr": 34,
+            "spo2": 84
+          },
+          "dynamic": "rapid_deterioration_unless_airway_secured"
+        },
+        {
+          "id": "C",
+          "profile": "burn_frostbite_combined",
+          "vitals": {
+            "rr": 20,
+            "spo2": 96
+          },
+          "dynamic": "rewarming_conflict"
+        }
+      ],
+      "win_conditions": [
+        "伤员B 在恶化前完成气道预案",
+        "后送顺序符合 START 与资源约束",
+        "冻伤处置无禁忌操作",
+        "完成伤情登记"
+      ]
+    }
+  },
+  "source": {
+    "origin": "synthetic",
+    "author": "teaching-team",
+    "note": "合成战救训练情境（非真实事件），含虚拟患者脚本占位（正式状态机接入前仅作数据载体），正式使用前需医学与卫勤双审"
+  },
+  "change_note": "initial authoring"
+}

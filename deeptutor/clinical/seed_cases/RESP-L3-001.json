@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "case_code": "RESP-L3-001",
+  "title": "COPD 急性加重合并肺栓塞（复杂决策）",
+  "disease": "COPD急性加重合并肺栓塞",
+  "level": "L3",
+  "dimensions": {
+    "complexity": 4,
+    "diagnostic": 4,
+    "decision": 5,
+    "situational": 3
+  },
+  "knowledge_points": [
+    {
+      "code": "dx-01",
+      "name": "COPD急性加重"
+    },
+    {
+      "code": "dx-02",
+      "name": "肺栓塞"
+    },
+    {
+      "code": "dx-03",
+      "name": "下肢深静脉血栓"
+    },
+    {
+      "code": "dx-04",
+      "name": "肺心病"
+    }
+  ],
+  "content": {
+    "chief_complaint": "COPD 病史 15 年，呼吸困难加重 3 天，突发胸痛 2 小时",
+    "present_illness": "患者男性 68 岁，COPD 病史 15 年，长期家庭氧疗。3 天前受凉后出现咳嗽、咳黄痰，呼吸困难较平时加重。今晨突发右侧胸痛，呈针刺样，伴咯血少量（约 20mL），呼吸困难进一步加重。自述「感觉要憋死」。无发热。近 1 周因感染卧床，活动减少。",
+    "past_history": "COPD 病史 15 年，肺心病史 3 年。高血压病史 10 年。无糖尿病。吸烟史 40 年，20 支/日，已戒烟 5 年。",
+    "physical_examination": "T 37.5℃，P 112 次/分，R 28 次/分，BP 105/70 mmHg，SpO2 88%（未吸氧）。神清，呼吸急促，口唇发绀。双肺呼吸音低，散在湿啰音，右下肺呼吸音减弱。心率 112 次/分，律齐，P2 亢进。双下肢轻度水肿，右下肢较左下肢明显增粗，Homans 征阳性。",
+    "auxiliary_exams": [
+      {
+        "exam_name": "血常规",
+        "category": "lab",
+        "result": "WBC 12.8×10^9/L，NEUT% 78%，Hb 145 g/L",
+        "is_key_evidence": false
+      },
+      {
+        "exam_name": "血气分析",
+        "category": "lab",
+        "result": "pH 7.36，PaCO2 48 mmHg，PaO2 55 mmHg，HCO3- 26 mmol/L，P(A-a)O2 显著增大",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "D-二聚体",
+        "category": "lab",
+        "result": "D-dimer 4.5 μg/mL（显著升高）",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "心电图",
+        "category": "lab",
+        "result": "窦性心动过速，SⅠQⅢTⅢ征",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "胸部CTPA",
+        "category": "imaging",
+        "result": "右下肺动脉充盈缺损（栓塞），右肺下叶梗死灶。双肺肺气肿征，右下肢深静脉血栓",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "下肢静脉超声",
+        "category": "imaging",
+        "result": "右下肢深静脉血栓形成（腘静脉-股静脉）",
+        "is_key_evidence": true
+      }
+    ],
+    "diagnosis": "1. COPD 急性加重（中度）；2. 急性肺栓塞（高危）；3. 右下肢深静脉血栓形成",
+    "key_evidence": [
+      "COPD 急性加重的症状（咳嗽、咳痰、呼吸困难加重）",
+      "突发胸痛、咯血、呼吸困难骤升",
+      "肺栓塞三联征：胸痛、咯血、呼吸困难",
+      "D-二聚体显著升高",
+      "CTPA 示肺动脉充盈缺损",
+      "下肢深静脉血栓证据",
+      "心电图 SⅠQⅢTⅢ"
+    ],
+    "differential_diagnosis": [
+      "COPD 单纯急性加重（不会出现胸痛，D-二聚体正常或轻度升高，心电图中规中矩）",
+      "急性心肌梗死（肌钙蛋白升高，心电图动态演变，无下肢深静脉血栓证据）",
+      "气胸（突发胸痛+呼吸困难，但无咯血，叩诊鼓音，CT无栓塞征象）"
+    ],
+    "common_errors": [
+      {
+        "error_type": "differential_exclusion",
+        "description": "只诊断为 COPD 加重，遗漏肺栓塞",
+        "trigger_feedback": "患者呼吸困难的突然加重、胸痛和咯血，用单纯的 COPD 急性加重能完全解释吗？还需要考虑什么急性事件？",
+        "prototype_error_type": "differential_omission"
+      },
+      {
+        "error_type": "logic_breakpoint",
+        "description": "D-二聚体升高直接确诊肺栓塞",
+        "trigger_feedback": "D-二聚体升高只能提示血栓风险，不能确诊。在 COPD 患者中，D-二聚体也可能轻度升高。确诊还需要什么检查？",
+        "prototype_error_type": "logic_jump"
+      },
+      {
+        "error_type": "decision_bias",
+        "description": "为肺栓塞抗凝但忽略 COPD 加重治疗",
+        "trigger_feedback": "患者同时存在两个问题，不能只处理一个。COPD 加重的基础治疗也不能忽略。",
+        "prototype_error_type": "improper_treatment"
+      }
+    ],
+    "diagnostic_pitfalls": [
+      "COPD 患者呼吸困难加重的鉴别诊断需要高度警惕肺栓塞",
+      "老年患者表现可不典型，胸痛可能不明显",
+      "D-二聚体在 COPD 也可升高，需结合临床概率评估",
+      "不要因 COPD 病史就忽略其他可能"
+    ],
+    "training_objectives": [
+      "掌握 COPD 急性加重的识别与处理",
+      "掌握肺栓塞的临床表现和诊断流程",
+      "能对呼吸困难患者进行系统性鉴别诊断",
+      "掌握复杂多病共存情况下的临床决策",
+      "能平衡多病共存的治疗优先级"
+    ],
+    "standard_workflow": [
+      "快速评估生命体征和氧合状态",
+      "详细问诊（现病史三方面：COPD症状变化+新发胸痛+咯血）",
+      "体格检查（重点：呼吸系统、心脏、下肢）",
+      "血气分析 + D-二聚体 + ECG",
+      "CTPA（确诊肺栓塞） + 下肢静脉超声",
+      "同时启动 COPD 加重治疗（抗生素+支气管扩张剂+激素）",
+      "启动肺栓塞抗凝治疗",
+      "评估是否需溶栓（高危栓塞）",
+      "考虑下腔静脉滤器"
+    ],
+    "scoring_rubric": {
+      "maxScore": 100,
+      "dimensions": [
+        {
+          "name": "病情紧急度判断",
+          "weight": 20,
+          "criteria": "是否快速识别高危状态，正确评估生命体征"
+        },
+        {
+          "name": "鉴别诊断能力",
+          "weight": 25,
+          "criteria": "是否能识别出 COPD 加重以外的可能性"
+        },
+        {
+          "name": "检查选择针对性",
+          "weight": 20,
+          "criteria": "是否选择了 D-二聚体、CTPA 等高价值检查"
+        },
+        {
+          "name": "多病共存决策",
+          "weight": 20,
+          "criteria": "是否同时兼顾了两个疾病的治疗"
+        },
+        {
+          "name": "治疗优先级",
+          "weight": 15,
+          "criteria": "是否合理排序了治疗干预的优先级"
+        }
+      ]
+    }
+  },
+  "source": {
+    "origin": "synthetic",
+    "author": "mock-dev",
+    "note": "converted from ai-companion prototype case mock-l3-001; error_type codes mapped to the working eight-type dictionary pending D2 sign-off (['differential_omission', 'improper_treatment', 'logic_jump'])"
+  },
+  "change_note": "converted from ai-companion prototype"
+}

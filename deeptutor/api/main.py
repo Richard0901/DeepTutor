@@ -527,6 +527,7 @@ from deeptutor.api.routers import (
     agent_config,
     attachments,
     auth,
+    clinical_cases,
     book,
     capabilities,
     capabilities_settings,
@@ -559,6 +560,7 @@ from deeptutor.api.routers import (
     subagents,
     system,
     task_board,
+    teaching,
     unified_ws,
     video_learning,
     visualizers,
@@ -609,6 +611,14 @@ app.include_router(
     dependencies=[Depends(require_auth)],
 )
 app.include_router(imports.router, prefix="/api/imports", tags=["imports"], dependencies=_auth)
+
+# Teaching-domain endpoints (secondary development, 2026-07-24 plan)
+app.include_router(
+    teaching.router, prefix="/api/v1/teaching", tags=["teaching"], dependencies=_auth
+)
+app.include_router(
+    clinical_cases.router, prefix="/api/v1/clinical", tags=["clinical-cases"], dependencies=_auth
+)
 app.include_router(
     dashboard.router, prefix="/api/dashboard", tags=["dashboard"], dependencies=_auth
 )
