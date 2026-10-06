@@ -303,3 +303,71 @@ def review_attempt(
     except TeachingError as exc:
         raise _to_http(exc) from exc
     return attempt.__dict__
+
+
+# ---------------------------------------------------------------------------
+# Virtual patient sessions (plan WP6)
+# ---------------------------------------------------------------------------
+
+
+class CreateSessionRequest(BaseModel):
+    attempt_id: str = Field(..., min_length=1)
+
+
+class PatientActionRequest(BaseModel):
+    action_type: str = Field(..., pattern="^(begin|ask_question|order_exam|advance_phase|submit_disposition)$")
+    text: str = Field(default="", max_length=2000)
+    exam_name: str = Field(default="", max_length=200)
+    option: str = Field(default="", max_length=200)
+
+
+def get_patient_service(conn: Any = Depends(get_conn)):
+    from deeptutor.clinical.virtual_patient.service import PatientSessionService
+
+    return PatientSessionService(conn)
+
+
+@router.post("/patient-sessions")
+def create_patient_session(
+    req: CreateSessionRequest, svc=Depends(get_patient_service)
+):
+    try:
+        session = svc.create_session(req.attempt_id, actor_id=_current_user_id())
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return session
+
+
+@router.get("/patient-sessions/{session_id}")
+def get_patient_session(session_id: str, svc=Depends(get_patient_service)):
+    try:
+        session = svc.get_session(session_id, actor_id=_current_user_id())
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return session
+
+
+@router.post("/patient-sessions/{session_id}/actions")
+def perform_patient_action(
+    session_id: str, req: PatientActionRequest, svc=Depends(get_patient_service)
+):
+    from deeptutor.clinical.virtual_patient.engine import Action
+
+    action = Action(
+        action_type=req.action_type,
+        payload={"text": req.text, "exam_name": req.exam_name, "option": req.option},
+    )
+    try:
+        result = svc.perform_action(session_id, actor_id=_current_user_id(), action=action)
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return result
+
+
+@router.get("/patient-sessions/{session_id}/events")
+def list_patient_events(session_id: str, svc=Depends(get_patient_service)):
+    try:
+        events = svc.list_events(session_id, actor_id=_current_user_id())
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return events

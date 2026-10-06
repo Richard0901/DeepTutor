@@ -206,12 +206,45 @@ class AttemptService:
             raise AttemptStateError(
                 "cannot submit: missing required reasoning steps: " + ", ".join(missing)
             )
+        self._require_patient_session_if_scripted(attempt)
         self._conn.execute(
             "UPDATE case_attempts SET status = 'submitted', submitted_at = ? WHERE attempt_id = ?",
             (utc_now(), attempt_id),
         )
         self._conn.commit()
         return self._get_attempt_raw(attempt_id)
+
+    def _require_patient_session_if_scripted(self, attempt: CaseAttempt) -> None:
+        """Cases with a patient script require a completed consultation
+        before the final answer is accepted (SKILL Sprint 3 gate: 未到终态
+        前不能提交最终答案)."""
+        import json
+
+        from deeptutor.clinical.virtual_patient.script import script_from_content
+        from deeptutor.clinical.virtual_patient.service import PatientSessionService
+
+        case_id = self._conn.execute(
+            "SELECT case_id FROM assignments WHERE assignment_id = ?",
+            (attempt.assignment_id,),
+        ).fetchone()["case_id"]
+        row = self._conn.execute(
+            """
+            SELECT cv.content_json FROM case_versions cv
+            JOIN clinical_cases cc ON cc.current_version_id = cv.version_id
+            WHERE cc.case_id = ?
+            """,
+            (case_id,),
+        ).fetchone()
+        # content_json stores the whole case payload; the script lives under
+        # the payload's "content" key.
+        content = json.loads(row["content_json"]).get("content", {})
+        if script_from_content(content) is None:
+            return
+        if not PatientSessionService(self._conn).has_terminated_session(attempt.attempt_id):
+            raise AttemptStateError(
+                "cannot submit: this case includes a virtual patient consultation "
+                "that has not been completed yet"
+            )
 
     # -- teacher review -----------------------------------------------------
 

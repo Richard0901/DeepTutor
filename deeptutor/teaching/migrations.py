@@ -230,8 +230,49 @@ DROP INDEX IF EXISTS idx_case_attempts_assignment;
 DROP TABLE IF EXISTS case_attempts;
 """
 
+_MIGRATION_0004_UP = """
+-- Virtual patient sessions (plan WP6). Truth lives in the deterministic
+-- state machine + the append-only event log; sessions are replayable from
+-- events alone (plan hard constraint #5). A state-snapshot cache table is
+-- deferred until event volume justifies it (WP9); reads replay the log.
+CREATE TABLE patient_sessions (
+    session_id TEXT PRIMARY KEY,
+    attempt_id TEXT NOT NULL REFERENCES case_attempts (attempt_id),
+    case_id TEXT NOT NULL REFERENCES clinical_cases (case_id),
+    student_id TEXT NOT NULL,
+    script_hash TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'terminated')),
+    phase TEXT NOT NULL DEFAULT 'initial',
+    outcome_json TEXT,
+    started_at TEXT NOT NULL,
+    terminated_at TEXT,
+    created_at TEXT NOT NULL
+);
+
+CREATE INDEX idx_patient_sessions_attempt ON patient_sessions (attempt_id);
+
+CREATE TABLE patient_events (
+    event_id TEXT PRIMARY KEY,
+    session_id TEXT NOT NULL REFERENCES patient_sessions (session_id),
+    seq INTEGER NOT NULL,
+    action_type TEXT NOT NULL CHECK (action_type IN (
+        'begin', 'ask_question', 'order_exam', 'advance_phase', 'submit_disposition')),
+    payload_json TEXT NOT NULL,
+    released_json TEXT NOT NULL,
+    phase_after TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    UNIQUE (session_id, seq)
+);
+"""
+
+_MIGRATION_0004_DOWN = """
+DROP TABLE IF EXISTS patient_events;
+DROP TABLE IF EXISTS patient_sessions;
+"""
+
 MIGRATIONS: tuple[Migration, ...] = (
     Migration(version=1, name="teaching_organization", up=_MIGRATION_0001_UP, down=_MIGRATION_0001_DOWN),
     Migration(version=2, name="clinical_case_content", up=_MIGRATION_0002_UP, down=_MIGRATION_0002_DOWN),
     Migration(version=3, name="clinical_attempts", up=_MIGRATION_0003_UP, down=_MIGRATION_0003_DOWN),
+    Migration(version=4, name="virtual_patient", up=_MIGRATION_0004_UP, down=_MIGRATION_0004_DOWN),
 )

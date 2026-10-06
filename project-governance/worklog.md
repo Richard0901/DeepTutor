@@ -2,6 +2,26 @@
 
 > 按日期倒序记录。每条注明涉及的工作包（WP）与证据位置。已完成事项必须有对应 commit 或文档；未完成事项如实标注。
 
+## 2026-10-06（第三批）— WP6 虚拟患者 MVP（Sprint 3）
+
+**代码（本批 commit）**：
+
+1. **migration 0004**：`patient_sessions`（会话）+ `patient_events`（追加式事件日志，session_id+seq 唯一）。状态快照表按计划 §4.3 暂缓——当前事件量级下回放即读，README/worklog 留痕，事件量增长后再加缓存。
+2. **脚本 schema（`virtual_patient/script.py`）**：`script_version: 2`，snake_case 字段（inquiry_map/exam_results/disposition_options/phase_actions/required_revelations），兼容 ai-companion 原型 camelCase 字段的归一化读取；`progressionScript`/`disclosureRules` 原样保留为 WP9 输入，本引擎不消费。格式不合法的脚本（如 L4 批量伤员情境）按"无脚本"处理并留待 WP9。
+3. **确定性引擎（`virtual_patient/engine.py`）**：五阶段（initial→history_taking→examination→disposition→terminated），动作白名单按相位配置；关键词匹配释放问诊信息（含"新信息"标注与未命中兜底话术）；检查结果按配置释放；处置需 `required_revelations` 齐备，提交即终止并给出正误反馈。纯函数转换（state, script, action）→(next_state, released)，无随机、无时钟、无 LLM，事件重放可逐字节复原状态。
+4. **会话服务（`virtual_patient/service.py`）**：仅本人 + in_progress 尝试可开会话；每次动作追加一个事件；会话状态由事件回放重建（日志不一致即报错）；脚本变更后旧会话拒绝继续动作。
+5. **提交门槛集成**：带脚本的病例，学员尝试提交前必须完成至少一次已终止的问诊会话（SKILL Sprint 3 验收项"未到终态前不能提交最终答案"）。
+6. **API 路由 4 个**：POST/GET `/patient-sessions`、POST `/{id}/actions`、GET `/{id}/events`（挂 `/api/v1/clinical`）。
+7. **种子升级**：RESP-L2-001 患者脚本转为 v2 schema（11 问诊话题 + 4 项检查 + 3 个处置选项），转换留痕字段 `converted_from`。
+8. **测试**：新增 8 项（脚本校验/相位门控/信息释放/处置门槛/事件重放一致性/所有权/全流程/无脚本病例不设门槛），全库 72 项通过，ruff 清洁。
+9. **全链路演练**：L2-001 导入→双审发布→作业→五步训练→提交被门槛拦截→问诊会话（begin→5 问→进检查相→肺功能→进处置相→提交处置）→提交放行→教师复核，10 个事件完整可回放。
+
+**修复记录**：批次 1 清理插桩时误删 `AttemptService.record_review`（截断重写法所致），本批发现并恢复，HTTP 层测试可覆盖该方法。经验教训：尾部重写类编辑后必须跑全量回归。
+
+**待办（下次）**：WP7 评估助手初评框架（量规版本、AI 初评占位、错误标注、低置信度转人工）；患者脚本的内容生产指引并入专家指引；会话详情页前端（Sprint 3 前端项）。
+
+---
+
 ## 2026-10-06（第二批）— WP4 学员训练闭环 + HTTP 权限测试 + clinical-offline 最小版 + 管理文档
 
 **代码（本批 commit 1）**：
