@@ -20,8 +20,8 @@ embedded as ``patient_script``.
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
+import sys
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SOURCE = REPO_ROOT.parent / "分级病例库" / "data" / "cases"
