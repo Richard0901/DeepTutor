@@ -270,9 +270,83 @@ DROP TABLE IF EXISTS patient_events;
 DROP TABLE IF EXISTS patient_sessions;
 """
 
+_MIGRATION_0005_UP = """
+-- Assessment framework (plan WP7): rule-based first-pass assessment with
+-- mandatory human review. Per plan §7/G3, AI error tags stay '辅助提示' and
+-- never enter formal grades until classification validity is proven.
+CREATE TABLE rubric_versions (
+    rubric_id TEXT PRIMARY KEY,
+    case_id TEXT NOT NULL REFERENCES clinical_cases (case_id),
+    case_version_id TEXT NOT NULL REFERENCES case_versions (version_id),
+    rubric_json TEXT NOT NULL,
+    error_dictionary_version TEXT NOT NULL DEFAULT 'D2-working-2026-10-06',
+    created_at TEXT NOT NULL
+);
+
+CREATE TABLE assessment_runs (
+    run_id TEXT PRIMARY KEY,
+    attempt_id TEXT NOT NULL REFERENCES case_attempts (attempt_id),
+    rubric_id TEXT NOT NULL REFERENCES rubric_versions (rubric_id),
+    engine TEXT NOT NULL DEFAULT 'rules_v1' CHECK (engine IN ('rules_v1', 'llm_local')),
+    status TEXT NOT NULL DEFAULT 'completed' CHECK (status IN ('running', 'completed', 'failed')),
+    summary_json TEXT,
+    created_at TEXT NOT NULL
+);
+
+CREATE INDEX idx_assessment_runs_attempt ON assessment_runs (attempt_id);
+
+CREATE TABLE assessment_scores (
+    score_id TEXT PRIMARY KEY,
+    run_id TEXT NOT NULL REFERENCES assessment_runs (run_id),
+    step_id TEXT NOT NULL REFERENCES reasoning_steps (step_id),
+    error_type TEXT CHECK (error_type IS NULL OR error_type IN (
+        'symptom_attribution', 'differential_exclusion', 'evidence_integration',
+        'decision_rationale', 'logic_breakpoint', 'evidence_gap',
+        'decision_bias', 'ethical_blind_spot')),
+    confidence REAL NOT NULL DEFAULT 0.0 CHECK (confidence BETWEEN 0 AND 1),
+    evidence TEXT NOT NULL DEFAULT '',
+    suggestion TEXT NOT NULL DEFAULT '',
+    needs_human_review INTEGER NOT NULL DEFAULT 1 CHECK (needs_human_review IN (0, 1)),
+    review_status TEXT NOT NULL DEFAULT 'pending'
+        CHECK (review_status IN ('pending', 'agreed', 'overridden', 'dismissed')),
+    created_at TEXT NOT NULL
+);
+
+CREATE INDEX idx_assessment_scores_run ON assessment_scores (run_id);
+CREATE INDEX idx_assessment_scores_status ON assessment_scores (review_status);
+
+CREATE TABLE human_reviews (
+    review_id TEXT PRIMARY KEY,
+    score_id TEXT NOT NULL REFERENCES assessment_scores (score_id),
+    teacher_id TEXT NOT NULL,
+    action TEXT NOT NULL CHECK (action IN ('agree', 'override', 'dismiss')),
+    final_error_type TEXT CHECK (final_error_type IS NULL OR final_error_type IN (
+        'symptom_attribution', 'differential_exclusion', 'evidence_integration',
+        'decision_rationale', 'logic_breakpoint', 'evidence_gap',
+        'decision_bias', 'ethical_blind_spot')),
+    final_is_correct INTEGER CHECK (final_is_correct IN (0, 1)),
+    comment TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL
+);
+
+CREATE INDEX idx_human_reviews_score ON human_reviews (score_id);
+"""
+
+_MIGRATION_0005_DOWN = """
+DROP INDEX IF EXISTS idx_human_reviews_score;
+DROP TABLE IF EXISTS human_reviews;
+DROP INDEX IF EXISTS idx_assessment_scores_status;
+DROP INDEX IF EXISTS idx_assessment_scores_run;
+DROP TABLE IF EXISTS assessment_scores;
+DROP INDEX IF EXISTS idx_assessment_runs_attempt;
+DROP TABLE IF EXISTS assessment_runs;
+DROP TABLE IF EXISTS rubric_versions;
+"""
+
 MIGRATIONS: tuple[Migration, ...] = (
     Migration(version=1, name="teaching_organization", up=_MIGRATION_0001_UP, down=_MIGRATION_0001_DOWN),
     Migration(version=2, name="clinical_case_content", up=_MIGRATION_0002_UP, down=_MIGRATION_0002_DOWN),
     Migration(version=3, name="clinical_attempts", up=_MIGRATION_0003_UP, down=_MIGRATION_0003_DOWN),
     Migration(version=4, name="virtual_patient", up=_MIGRATION_0004_UP, down=_MIGRATION_0004_DOWN),
+    Migration(version=5, name="assessment_framework", up=_MIGRATION_0005_UP, down=_MIGRATION_0005_DOWN),
 )

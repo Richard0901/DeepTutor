@@ -371,3 +371,71 @@ def list_patient_events(session_id: str, svc=Depends(get_patient_service)):
     except TeachingError as exc:
         raise _to_http(exc) from exc
     return events
+
+
+# ---------------------------------------------------------------------------
+# Assessment framework (plan WP7): rules_v1 first pass + teacher review
+# ---------------------------------------------------------------------------
+
+
+def get_assessment_service(conn: Any = Depends(get_conn)):
+    from deeptutor.assessment.service import AssessmentService
+
+    return AssessmentService(conn)
+
+
+class AssessmentReviewRequest(BaseModel):
+    action: str = Field(..., pattern="^(agree|override|dismiss)$")
+    final_error_type: str | None = Field(
+        default=None,
+        pattern="^(symptom_attribution|differential_exclusion|evidence_integration|decision_rationale|logic_breakpoint|evidence_gap|decision_bias|ethical_blind_spot)$",
+    )
+    final_is_correct: bool | None = None
+    comment: str = Field(default="", max_length=4000)
+
+
+@router.post("/attempts/{attempt_id}/assess")
+def run_assessment(
+    attempt_id: str, svc=Depends(get_assessment_service)
+):
+    try:
+        run = svc.run_assessment(attempt_id, actor_id=_current_user_id())
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return run
+
+
+@router.get("/assessment-runs/{run_id}")
+def get_assessment_run(run_id: str, svc=Depends(get_assessment_service)):
+    try:
+        run = svc.get_run(run_id, actor_id=_current_user_id())
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return run
+
+
+@router.get("/teacher/assessment-queue")
+def assessment_queue(class_id: str, svc=Depends(get_assessment_service)):
+    try:
+        items = svc.review_queue(class_id, actor_id=_current_user_id())
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return items
+
+
+@router.post("/assessment-scores/{score_id}/review")
+def review_assessment_score(
+    score_id: str, req: AssessmentReviewRequest, svc=Depends(get_assessment_service)
+):
+    try:
+        review = svc.record_review(
+            score_id,
+            teacher_id=_current_user_id(),
+            action=req.action,
+            final_error_type=req.final_error_type,
+            final_is_correct=req.final_is_correct,
+            comment=req.comment,
+        )
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return review
