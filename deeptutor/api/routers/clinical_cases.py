@@ -244,10 +244,9 @@ def list_attempts(
 @router.get("/attempts/{attempt_id}")
 def get_attempt(attempt_id: str, svc: AttemptService = Depends(get_attempt_service)):
     try:
-        attempt = svc.get_attempt(attempt_id, actor_id=_current_user_id())
+        return svc.get_attempt_view(attempt_id, actor_id=_current_user_id())
     except TeachingError as exc:
         raise _to_http(exc) from exc
-    return attempt.__dict__
 
 
 @router.get("/attempts/{attempt_id}/steps")
@@ -325,6 +324,14 @@ def get_patient_service(conn: Any = Depends(get_conn)):
     from deeptutor.clinical.virtual_patient.service import PatientSessionService
 
     return PatientSessionService(conn)
+
+
+@router.get("/attempts/{attempt_id}/patient-session")
+def latest_patient_session(attempt_id: str, svc=Depends(get_patient_service)):
+    try:
+        return svc.latest_session(attempt_id, actor_id=_current_user_id())
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
 
 
 @router.post("/patient-sessions")

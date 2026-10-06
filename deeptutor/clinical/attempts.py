@@ -73,6 +73,30 @@ class AttemptService:
             raise NotFoundError(f"attempt '{attempt_id}' not found")
         return _row_to_attempt(row)
 
+    def get_attempt_view(self, attempt_id: str, *, actor_id: str) -> dict:
+        """Attempt enriched with the class/case/assignment context the
+        student workspace needs (titles for headers, ids for navigation)."""
+        attempt = self.get_attempt(attempt_id, actor_id=actor_id)
+        row = self._conn.execute(
+            """
+            SELECT a.class_id, a.title AS assignment_title,
+                   c.case_id, c.title AS case_title, c.level, c.status AS case_status
+            FROM assignments a JOIN clinical_cases c ON c.case_id = a.case_id
+            WHERE a.assignment_id = ?
+            """,
+            (attempt.assignment_id,),
+        ).fetchone()
+        if row is None:
+            raise NotFoundError(f"assignment for attempt '{attempt_id}' not found")
+        return {
+            **attempt.__dict__,
+            "class_id": row["class_id"],
+            "assignment_title": row["assignment_title"],
+            "case_id": row["case_id"],
+            "case_title": row["case_title"],
+            "case_level": row["level"],
+        }
+
     def _assignment_class_id(self, assignment_id: str) -> str:
         row = self._conn.execute(
             "SELECT class_id FROM assignments WHERE assignment_id = ?", (assignment_id,)

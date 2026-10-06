@@ -2,6 +2,30 @@
 
 > 按日期倒序记录。每条注明涉及的工作包（WP）与证据位置。已完成事项必须有对应 commit 或文档；未完成事项如实标注。
 
+## 2026-10-06（第六批）— 前端最小可用版（五个页面）+ 150 病例库导入
+
+**前端（本批 commit，`web/`）**：
+
+1. **页面（App Router，(workspace) 路由组，直链访问）**：
+   - `/academic` 课程管理：课程/班级/成员（增删，Sprint 0 验收项）
+   - `/academic/cases` 分级病例库：层级/状态筛选 + 送审/通过/驳回/发布操作（双审状态机）
+   - `/learn` 学员任务首页：我的班级 → 任务列表 → 训练记录 → 一键开训
+   - `/learn/attempts/[attemptId]` **训练工作台**：病例摘要（不含答案性检查结果）、六步结构化推理表单（5 必填+再评估）、虚拟患者问诊面板（接诊→提问→开检查→处置，含问诊记录回放）、提交与门槛报错展示、教师复核意见回显
+   - `/teach` 教师看板：任务完成度/待复核/风险/干预四项指标、风险队列一键记录干预、评估复核队列（确认/改判/忽略）、干预记录关闭
+2. **取数层**：`components/teaching/teaching-api.ts` 手写类型 + `apiFetch(apiUrl())` 复用现有鉴权与作用域封装（生成契约仅覆盖上游接口，教学面按 README 约定手写类型）。
+3. **后端配套小缺口**：`GET /api/v1/teaching/my/classes`（学员工作台入口）、`AttemptService.get_attempt_view`（尝试详情带班级/病例上下文，供页面导航）、`GET /attempts/{id}/patient-session`（最近问诊会话）。
+4. **验证**：typecheck 新增文件 0 错误（本地 412 个既有报错全部来自 tests/ 缺 dev 依赖与 .next 陈旧产物，与本次无关）；eslint 新文件 0 错误（81 个 i18n 字面量警告——中文文案未接词典，属 MVP 已知欠账，接入 i18n 为后续打磨项）；后端回归 87 项通过。**浏览器端到端联调未做**（本机缺完整后端依赖，需在完整开发环境跑 `npm run dev` + FastAPI 后人工走查）。
+
+**150 病例库导入**：
+
+- `scripts/convert_case_library.py`：并行工作的 150 合成病例（ai-companion schema）→ 导入模板 v1；错误码映射（decision_basis→decision_rationale、ethics_blindspot→ethical_blind_spot、logic_break→logic_breakpoint，映射留痕于 source.note）；原型患者脚本因缺处置选项不作为 v2 脚本启用，原样保留于 `content.patient_script_wp9` 供 WP9。
+- 转换产物入 `data/case_library/`（gitignore，**不入 git**——未双审内容不计入、不进仓库，符合"数量服从质量"）；正式库以独立租户 `draft-library` 导入 150 例（L1×40/L2×40/L3×40/L4×30，全部 draft），与 10 个种子病例（default 租户）隔离。
+- 提醒：150 例医学内容为 AI 起草，必须经双专家审核（Word 审核稿已备）后方可发布/计数。
+
+**待办（下次）**：浏览器端到端走查（完整环境）；侧边栏导航接入；i18n 词典接入；WP9 战救动态引擎；D1-D4 签字（人工）。
+
+---
+
 ## 2026-10-06（第五批）— WP8 教师看板最小版（班级聚合 + 风险规则 + 干预闭环）
 
 **代码（本批 commit）**：

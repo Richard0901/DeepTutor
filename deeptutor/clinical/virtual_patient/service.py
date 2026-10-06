@@ -213,6 +213,17 @@ class PatientSessionService:
         self.get_session(session_id, actor_id=actor_id)  # visibility gate
         return self._events(session_id)
 
+    def latest_session(self, attempt_id: str, *, actor_id: str) -> dict:
+        """Most recent session of the attempt, or raise NotFoundError."""
+        row = self._conn.execute(
+            "SELECT session_id FROM patient_sessions WHERE attempt_id = ?"
+            " ORDER BY created_at DESC LIMIT 1",
+            (attempt_id,),
+        ).fetchone()
+        if row is None:
+            raise NotFoundError(f"no patient session for attempt '{attempt_id}'")
+        return self.get_session(row["session_id"], actor_id=actor_id)
+
     def has_terminated_session(self, attempt_id: str) -> bool:
         row = self._conn.execute(
             "SELECT 1 FROM patient_sessions WHERE attempt_id = ? AND status = 'terminated' LIMIT 1",

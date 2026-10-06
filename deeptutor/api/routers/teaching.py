@@ -82,6 +82,17 @@ class AssignmentStatusRequest(BaseModel):
     status: str = Field(..., pattern="^(draft|open|closed)$")
 
 
+@router.get("/my/classes")
+def my_classes(tenant_id: str = "default", svc: TeachingService = Depends(get_service)):
+    """Classes the current user is an active member of (student workbench
+    entry point)."""
+    try:
+        classes = svc.classes_for_user(_current_user_id(), tenant_id=tenant_id)
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return [cls.__dict__ for cls in classes]
+
+
 @router.post("/courses")
 def create_course(req: CreateCourseRequest, svc: TeachingService = Depends(get_service)):
     try:
