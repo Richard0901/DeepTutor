@@ -13,6 +13,7 @@ from datetime import datetime, timedelta, timezone
 import sqlite3
 import uuid
 
+from deeptutor.teaching.audit import record_audit
 from deeptutor.teaching.models import utc_now
 from deeptutor.teaching.service import NotFoundError, TeachingError, TeachingService
 
@@ -193,6 +194,15 @@ class AnalyticsService:
             """,
             (intervention_id, class_id, student_id, teacher_id, reason.strip(), note, utc_now()),
         )
+        record_audit(
+            self._conn,
+            actor_id=teacher_id,
+            action="intervention_record",
+            object_type="intervention",
+            object_id=intervention_id,
+            class_id=class_id,
+            summary={"student_id": student_id},
+        )
         self._conn.commit()
         return self.get_intervention(intervention_id, actor_id=teacher_id)
 
@@ -207,6 +217,14 @@ class AnalyticsService:
             "UPDATE teacher_interventions SET status = 'resolved', outcome = ?, resolved_at = ?"
             " WHERE intervention_id = ?",
             (outcome, utc_now(), intervention_id),
+        )
+        record_audit(
+            self._conn,
+            actor_id=actor_id,
+            action="intervention_resolve",
+            object_type="intervention",
+            object_id=intervention_id,
+            class_id=row["class_id"],
         )
         self._conn.commit()
         return self.get_intervention(intervention_id, actor_id=actor_id)

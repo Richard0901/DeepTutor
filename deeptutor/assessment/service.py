@@ -8,6 +8,7 @@ import sqlite3
 import uuid
 
 from deeptutor.assessment.rules import assess_attempt
+from deeptutor.teaching.audit import record_audit
 from deeptutor.teaching.models import utc_now
 from deeptutor.teaching.service import (
     NotFoundError,
@@ -136,6 +137,15 @@ class AssessmentService:
             """,
             (run_id, attempt_id, rubric_id, engine, json.dumps(result["summary"], ensure_ascii=False), now),
         )
+        record_audit(
+            self._conn,
+            actor_id=actor_id,
+            action="assessment_run",
+            object_type="attempt",
+            object_id=attempt_id,
+            class_id=class_id,
+            summary={"engine": engine, "findings": len(result["findings"])},
+        )
         for finding in result["findings"]:
             self._conn.execute(
                 """
@@ -249,6 +259,15 @@ class AssessmentService:
         self._conn.execute(
             "UPDATE assessment_scores SET review_status = ? WHERE score_id = ?",
             (status_map[action], score_id),
+        )
+        record_audit(
+            self._conn,
+            actor_id=teacher_id,
+            action="assessment_review",
+            object_type="assessment_score",
+            object_id=score_id,
+            class_id=class_id,
+            summary={"action": action, "final_error_type": final_error_type},
         )
         self._conn.commit()
         return {

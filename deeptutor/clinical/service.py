@@ -20,6 +20,7 @@ import sqlite3
 from typing import Any
 import uuid
 
+from deeptutor.teaching.audit import record_audit
 from deeptutor.teaching.models import CaseReview, CaseVersion, ClinicalCase, utc_now
 from deeptutor.teaching.service import ConflictError, NotFoundError, TeachingError
 
@@ -263,6 +264,14 @@ class ClinicalCaseService:
             """,
             (_uuid(), case_id, version.version_id, reviewer_id, decision, comments, utc_now()),
         )
+        record_audit(
+            self._conn,
+            actor_id=reviewer_id,
+            action="case_review",
+            object_type="case",
+            object_id=case_id,
+            summary={"decision": decision},
+        )
         if decision == "approve":
             approvals = self._conn.execute(
                 """
@@ -299,6 +308,14 @@ class ClinicalCaseService:
             raise CaseStateError("a published version exists; use publish_new_version")
         self._set_version_status(version.version_id, "published")
         self._set_case_status(case_id, "published")
+        record_audit(
+            self._conn,
+            actor_id=actor_id,
+            action="case_publish",
+            object_type="case",
+            object_id=case_id,
+            summary={"version_id": version.version_id},
+        )
         self._conn.commit()
         return self.get_case(case_id)
 
@@ -332,6 +349,13 @@ class ClinicalCaseService:
         if case.status != "published":
             raise CaseStateError(f"case '{case_id}' is '{case.status}', only published cases can retire")
         self._set_case_status(case_id, "retired")
+        record_audit(
+            self._conn,
+            actor_id=actor_id,
+            action="case_retire",
+            object_type="case",
+            object_id=case_id,
+        )
         self._conn.commit()
         return self.get_case(case_id)
 

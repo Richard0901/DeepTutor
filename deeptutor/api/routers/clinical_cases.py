@@ -526,3 +526,75 @@ def resolve_intervention(
     except TeachingError as exc:
         raise _to_http(exc) from exc
     return intervention
+
+
+# ---------------------------------------------------------------------------
+# Gradebook (Sprint 5, 40/60 framework without weight synthesis) + student
+# self-progress profile
+# ---------------------------------------------------------------------------
+
+
+class SummativeScoreRequest(BaseModel):
+    student_id: str = Field(..., min_length=1)
+    title: str = Field(..., min_length=1, max_length=200)
+    score: float = Field(..., ge=0, le=100)
+    note: str = Field(default="", max_length=2000)
+
+
+def get_gradebook_service(conn: Any = Depends(get_conn)):
+    from deeptutor.analytics.gradebook import GradebookService
+
+    return GradebookService(conn)
+
+
+@router.get("/teacher/classes/{class_id}/gradebook")
+def teacher_gradebook(class_id: str, svc=Depends(get_gradebook_service)):
+    try:
+        return svc.gradebook(class_id, actor_id=_current_user_id())
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+
+
+@router.post("/teacher/classes/{class_id}/gradebook/scores")
+def record_summative_score(
+    class_id: str, req: SummativeScoreRequest, svc=Depends(get_gradebook_service)
+):
+    try:
+        return svc.record_summative_score(
+            class_id,
+            teacher_id=_current_user_id(),
+            student_id=req.student_id,
+            title=req.title,
+            score=req.score,
+            note=req.note,
+        )
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+
+
+@router.get("/teacher/classes/{class_id}/gradebook.csv")
+def gradebook_csv(class_id: str, svc=Depends(get_gradebook_service)):
+    from fastapi import Response
+
+    try:
+        csv_text = svc.csv_export(class_id, actor_id=_current_user_id())
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    return Response(
+        content=csv_text,
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename=gradebook-{class_id[:8]}.csv"},
+    )
+
+
+@router.get("/my/progress")
+def my_progress(svc: Any = Depends(get_conn)):
+    from deeptutor.analytics.progress import my_progress as progress_fn
+    from deeptutor.teaching.service import TeachingService
+
+    try:
+        student_id = _current_user_id()
+        TeachingService(svc).ensure_tenant("default")
+        return progress_fn(svc, student_id)
+    except TeachingError as exc:
+        raise _to_http(exc) from exc

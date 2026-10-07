@@ -15,6 +15,7 @@ from __future__ import annotations
 import sqlite3
 import uuid
 
+from deeptutor.teaching.audit import record_audit
 from deeptutor.teaching.models import CaseAttempt, ReasoningStep, utc_now
 from deeptutor.teaching.service import (
     NotFoundError,
@@ -235,6 +236,14 @@ class AttemptService:
             "UPDATE case_attempts SET status = 'submitted', submitted_at = ? WHERE attempt_id = ?",
             (utc_now(), attempt_id),
         )
+        record_audit(
+            self._conn,
+            actor_id=actor_id,
+            action="attempt_submit",
+            object_type="attempt",
+            object_id=attempt_id,
+            class_id=self._assignment_class_id(attempt.assignment_id),
+        )
         self._conn.commit()
         return self._get_attempt_raw(attempt_id)
 
@@ -318,6 +327,15 @@ class AttemptService:
             WHERE attempt_id = ?
             """,
             (utc_now(), reviewer_id, notes, attempt_id),
+        )
+        record_audit(
+            self._conn,
+            actor_id=reviewer_id,
+            action="attempt_review",
+            object_type="attempt",
+            object_id=attempt_id,
+            class_id=class_id,
+            summary={"marked_steps": len(step_marks or [])},
         )
         self._conn.commit()
         return self._get_attempt_raw(attempt_id)

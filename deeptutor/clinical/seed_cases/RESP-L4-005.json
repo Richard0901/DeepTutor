@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "case_code": "RESP-L4-005",
+  "title": "极寒环境冻伤与失温（复温与保温的矛盾决策）",
+  "disease": "冻伤",
+  "level": "L4",
+  "dimensions": {
+    "complexity": 4,
+    "diagnostic": 3,
+    "decision": 5,
+    "situational": 5
+  },
+  "dimension_rationale": {
+    "complexity": "冻伤+失温+吸入性损伤风险叠加",
+    "diagnostic": "冻伤分层依赖复融反应，现场判断受限",
+    "decision": "复温-保温-后送的顺序冲突与资源约束",
+    "situational": "-30℃ 野外、夜间、通信受限"
+  },
+  "knowledge_points": [
+    { "code": "dx-01", "name": "冻伤" },
+    { "code": "dx-02", "name": "低体温症" },
+    { "code": "dx-03", "name": "战救分级后送" }
+  ],
+  "content": {
+    "chief_complaint": "严寒执勤 6 小时，双足与双手麻木变白，意识淡漠",
+    "present_illness": "（情境设定）-30℃ 夜间，一名哨兵未按规定轮换，执勤 6 小时后被发现于哨位：双足双手蜡白坚硬、感觉消失，全身寒战已停止，答话迟缓。医疗组在 3 公里外暖帐篷，现场仅有保温毯、化学产热包 2 个与温水壶；雪地摩托后送 ETA 30 分钟。同伴测量核心体温（直肠）33.5℃。",
+    "past_history": "健康信息不完全。",
+    "physical_examination": "核心体温 33.5℃，P 60 次/分，R 14 次/分，BP 108/70 mmHg。意识淡漠但能简单应答，无寒战。双足双手蜡白、坚硬、感觉消失。口唇无发绀，呼吸音清。无外伤。",
+    "auxiliary_exams": [
+      {
+        "exam_name": "37-39℃温水快速复温（冻伤肢体）",
+        "category": "treatment",
+        "result": "条件允许时的标准复温措施：40℃温水浸泡冻伤肢体 30 分钟；现场无浴盆时以保温+后送为主（现场措施受限提示）",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "核心保温（躯干隔离+产热包腋下/腹股沟）",
+        "category": "treatment",
+        "result": "躯干保暖优先于肢体复温：先防核心体温继续下降（失温期禁止肢体局部快速复温）",
+        "is_key_evidence": true
+      }
+    ],
+    "diagnosis": "重度冻伤（双上肢+双下肢，冻结期）合并中度低体温（33.5℃，寒战停止）——先核心保温抗失温，条件允许后温水复温，限期后送",
+    "key_evidence": [
+      "执勤 6 小时 + -30℃（重度冻伤与低体温的高危暴露）",
+      "寒战停止 + 意识淡漠 + 核心体温 33.5℃（中度低体温，失代偿信号）",
+      "肢体蜡白坚硬、感觉消失（冻结期冻伤）",
+      "现场复温条件不足（无温水浴），错误复温比不复温更危险",
+      "后送窗口：雪地摩托 30 分钟，途中防再冻结"
+    ],
+    "differential_diagnosis": [
+      "重度低体温（<30℃）：本例 33.5℃ 且尚能应答，为中度；但搬动需轻柔防心律失常",
+      "冻伤 vs 冻僵：冻伤为局部组织冻结，冻僵为全身低体温，本例两者并存",
+      "合并吸入性损伤/一氧化碳：若哨位使用取暖炉需排查 CO（本例无炉，暂不支持）"
+    ],
+    "common_errors": [
+      {
+        "error_type": "decision_rationale",
+        "description": "在低体温未纠正时优先对冻结肢体做温水快速复温",
+        "trigger_feedback": "先复温肢体还是先保住核心体温？'after-drop' 是什么？"
+      },
+      {
+        "error_type": "decision_bias",
+        "description": "用雪搓或火烤冻伤肢体",
+        "trigger_feedback": "哪些'土办法'会造成不可逆组织损伤？"
+      },
+      {
+        "error_type": "ethical_blind_spot",
+        "description": "未排哨位隐患上报，未记录暴露时长与复温过程",
+        "trigger_feedback": "这次冻伤里哪些环节属于可预防的指挥责任？"
+      }
+    ],
+    "diagnostic_pitfalls": [
+      "寒战停止不是'好转'，是低体温加重的失代偿信号",
+      "冻结期冻伤在不具备复温条件时应保持冻结状态后送，途中防再冻结",
+      "低体温伤员搬动必须轻柔，粗暴搬动可诱发室颤",
+      "核心保温优先于肢体复温"
+    ],
+    "training_objectives": [
+      "掌握低体温分级（寒战停止的意义）与搬运原则",
+      "掌握冻结期冻伤'保温等待条件复温'的决策逻辑",
+      "在资源受限下排定'核心保温→评估→后送'的顺序",
+      "识别可预防的指挥责任环节并完成上报"
+    ],
+    "standard_workflow": [
+      "轻柔脱离冷暴露，防碰撞",
+      "核心保温（躯干隔离、产热包腋下/腹股沟）",
+      "评估核心体温与意识（低体温分级）",
+      "肢体保持冻结状态，标记时间，禁忌揉搓/火烤",
+      "雪地摩托轻柔后送，途中持续核心保温与监测",
+      "上报哨位排班隐患"
+    ],
+    "scoring_rubric": {
+      "maxScore": 100,
+      "dimensions": [
+        { "name": "低体温识别与处理顺序", "weight": 30, "criteria": "核心保温优先、轻柔搬动" },
+        { "name": "冻伤处置规范", "weight": 25, "criteria": "禁止不当复温、保持冻结后送" },
+        { "name": "后送组织", "weight": 25, "criteria": "途中防再冻结与持续监测" },
+        { "name": "记录与上报", "weight": 20, "criteria": "暴露时长、复温过程、隐患上报" }
+      ]
+    },
+    "patient_script": {
+      "script_version": 2,
+      "profile": { "name": "小赵", "age": 20, "gender": "男", "role": "哨兵" },
+      "initial_vitals": { "heartRate": 60, "respiratoryRate": 14, "systolicBP": 108, "coreTemperature": 33 },
+      "inquiry_map": [
+        { "topic": "主诉", "keywords": ["状态", "怎么样"], "response": "（同伴）他站了六个小时，叫他有反应但很慢，手脚都白了。", "is_key_info": true },
+        { "topic": "暴露时间", "keywords": ["多久", "几个小时"], "response": "按排班应该两小时一轮，他多站了四个小时。", "is_key_info": true }
+      ],
+      "exam_results": [
+        { "exam_name": "核心保温", "result_description": "躯干隔离+产热包，核心体温停止下降（处置措施）", "is_definitive": true },
+        { "exam_name": "直肠测温", "result_description": "核心体温 33.5℃，中度低体温", "is_definitive": true }
+      ],
+      "disposition_options": [
+        {
+          "name": "核心保温+肢体保持冻结+轻柔后送（防再冻结）",
+          "is_correct": true,
+          "feedback": "正确：现场不具备复温条件时保持冻结后送，核心保温优先。"
+        },
+        {
+          "name": "现场火堆烘烤冻伤肢体后后送",
+          "is_correct": false,
+          "feedback": "错误：火烤导致不可逆烧伤，且肢体复温会诱发 after-drop。"
+        },
+        {
+          "name": "现场温水浸泡复温肢体后再后送",
+          "is_correct": false,
+          "feedback": "错误：无控温条件下的复温不可控，且低体温未纠正时肢体复温危险。"
+        }
+      ],
+      "rescue": {
+        "time_budget_minutes": 45,
+        "evac_eta_minutes": 30,
+        "action_costs": {
+          "begin": 2, "ask_question": 3, "order_exam": 5,
+          "advance_phase": 2, "reassess": 3, "wait": 10, "submit_disposition": 5
+        },
+        "deterioration": [
+          { "after_minutes": 12, "vitals": { "coreTemperature": -1, "heartRate": -5 }, "symptoms": ["应答进一步迟缓"] },
+          { "after_minutes": 25, "vitals": { "coreTemperature": -2, "respiratoryRate": -2 }, "symptoms": ["意识模糊"] }
+        ],
+        "interventions": [
+          { "action": "order_exam", "match": "核心保温", "vitals": { "coreTemperature": 1 }, "consumes": { "heatpack": 2 } }
+        ],
+        "resources": { "heatpack": 2 }
+      },
+      "required_revelations": ["主诉", "暴露时间"]
+    }
+  },
+  "source": {
+    "origin": "synthetic",
+    "author": "teaching-team",
+    "note": "合成战救训练病例（非真实患者），WP9 第一阶段 rescue 原型（第 3 例）；正式使用前需医学与卫勤双审"
+  },
+  "change_note": "initial authoring with rescue config"
+}

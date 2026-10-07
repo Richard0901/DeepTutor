@@ -449,6 +449,46 @@ DROP TABLE patient_events;
 ALTER TABLE patient_events_pre_rescue RENAME TO patient_events;
 """
 
+_MIGRATION_0009_UP = """
+-- Governance (Sprint 5): teaching-domain audit events committed in the
+-- same transaction as the action they record (unlike the best-effort
+-- upstream usage JSONL), and the summative component of the gradebook.
+CREATE TABLE teaching_audit_events (
+    audit_id TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL,
+    actor_id TEXT NOT NULL,
+    action TEXT NOT NULL,
+    object_type TEXT NOT NULL,
+    object_id TEXT NOT NULL,
+    class_id TEXT,
+    summary_json TEXT NOT NULL DEFAULT '{}'
+);
+
+CREATE INDEX idx_teaching_audit_class ON teaching_audit_events (class_id, created_at);
+CREATE INDEX idx_teaching_audit_actor ON teaching_audit_events (actor_id, created_at);
+
+CREATE TABLE summative_scores (
+    score_row_id TEXT PRIMARY KEY,
+    class_id TEXT NOT NULL REFERENCES teaching_classes (class_id),
+    student_id TEXT NOT NULL,
+    title TEXT NOT NULL,
+    score REAL NOT NULL CHECK (score BETWEEN 0 AND 100),
+    teacher_id TEXT NOT NULL,
+    note TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL
+);
+
+CREATE INDEX idx_summative_class_student ON summative_scores (class_id, student_id);
+"""
+
+_MIGRATION_0009_DOWN = """
+DROP INDEX IF EXISTS idx_summative_class_student;
+DROP TABLE IF EXISTS summative_scores;
+DROP INDEX IF EXISTS idx_teaching_audit_actor;
+DROP INDEX IF EXISTS idx_teaching_audit_class;
+DROP TABLE IF EXISTS teaching_audit_events;
+"""
+
 MIGRATIONS: tuple[Migration, ...] = (
     Migration(version=1, name="teaching_organization", up=_MIGRATION_0001_UP, down=_MIGRATION_0001_DOWN),
     Migration(version=2, name="clinical_case_content", up=_MIGRATION_0002_UP, down=_MIGRATION_0002_DOWN),
@@ -458,4 +498,5 @@ MIGRATIONS: tuple[Migration, ...] = (
     Migration(version=6, name="teacher_analytics", up=_MIGRATION_0006_UP, down=_MIGRATION_0006_DOWN),
     Migration(version=7, name="rescue_engine", up=_MIGRATION_0007_UP, down=_MIGRATION_0007_DOWN),
     Migration(version=8, name="rescue_event_actions", up=_MIGRATION_0008_UP, down=_MIGRATION_0008_DOWN),
+    Migration(version=9, name="governance_gradebook", up=_MIGRATION_0009_UP, down=_MIGRATION_0009_DOWN),
 )

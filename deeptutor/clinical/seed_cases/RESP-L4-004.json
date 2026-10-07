@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "case_code": "RESP-L4-004",
+  "title": "张力性气胸战场救治（穿刺减压的时机决策）",
+  "disease": "张力性气胸",
+  "level": "L4",
+  "dimensions": {
+    "complexity": 4,
+    "diagnostic": 4,
+    "decision": 5,
+    "situational": 5
+  },
+  "dimension_rationale": {
+    "complexity": "火线救治、信息不完全、伤情进行性恶化",
+    "diagnostic": "张力性气胸是临床诊断，不允许等影像",
+    "decision": "穿刺减压时机与后送衔接的时间决策",
+    "situational": "交火环境下掩蔽处置，装备受限"
+  },
+  "knowledge_points": [
+    { "code": "dx-01", "name": "张力性气胸" },
+    { "code": "dx-02", "name": "胸腔穿刺减压" },
+    { "code": "dx-03", "name": "TCCC火线救治" }
+  ],
+  "content": {
+    "chief_complaint": "爆炸伤后呼吸困难进行性加重 20 分钟，颈静脉怒张",
+    "present_illness": "（情境设定）巡逻队遭路边爆炸袭击。21 岁战士右胸被破片击伤，救回掩体后 20 分钟内呼吸困难进行性加重。现场装备：胸腔穿刺针 1 套、绷带、担架；后送车 ETA 25 分钟。军医 1 名，交火尚未完全停止，处置需在掩体后完成。",
+    "past_history": "健康信息不完全（战友代述：无慢性病史）。",
+    "physical_examination": "（按学员动作释放）SpO2 86% 且下降，R 34 次/分，P 128 次/分，BP 92/70 mmHg 且脉压差缩小。气管左偏，右侧胸廓饱满、叩诊鼓音、呼吸音消失，颈静脉怒张。右胸壁见 2cm 破片伤口，无吮吸声。",
+    "auxiliary_exams": [
+      {
+        "exam_name": "胸腔穿刺减压（右侧锁骨中线第2肋间）",
+        "category": "treatment",
+        "result": "穿刺后喷出气体，呼困即刻缓解，SpO2 回升至 94%（现场关键救治措施）",
+        "is_key_evidence": true
+      },
+      {
+        "exam_name": "胸壁密封敷料",
+        "category": "treatment",
+        "result": "三边密封敷料覆盖穿刺口与破片伤口，防止张力性气胸复发",
+        "is_key_evidence": true
+      }
+    ],
+    "diagnosis": "右侧张力性气胸（爆炸破片伤）——立即穿刺减压，密封敷料覆盖，按后送窗口组织后送",
+    "key_evidence": [
+      "气管向健侧（左）偏移",
+      "右侧饱满、鼓音、呼吸音消失三联",
+      "颈静脉怒张 + 血压下降（张力影响回心）",
+      "SpO2 进行性下降——不允许等待影像学确认",
+      "后送 ETA 25 分钟，减压必须在其之前完成"
+    ],
+    "differential_diagnosis": [
+      "单纯气胸：无颈静脉怒张与血压下降，本例血流动力学受累提示张力性",
+      "心包填塞：Beck 三联（低血压、心音遥远、颈静脉怒张），但气管偏移与鼓音指向胸腔",
+      "大量血胸：叩诊浊音而非鼓音"
+    ],
+    "common_errors": [
+      {
+        "error_type": "decision_rationale",
+        "description": "坚持等后送车到再处理，错过减压窗口",
+        "trigger_feedback": "张力性气胸的死亡机制是什么？等待 25 分钟会发生什么？"
+      },
+      {
+        "error_type": "logic_breakpoint",
+        "description": "先拍胸片确认再减压",
+        "trigger_feedback": "张力性气胸允许影像确诊吗？"
+      },
+      {
+        "error_type": "ethical_blind_spot",
+        "description": "减压后未持续观察复发，未记录穿刺时间与部位",
+        "trigger_feedback": "穿刺减压后的复发率如何？交接需要哪些信息？"
+      }
+    ],
+    "diagnostic_pitfalls": [
+      "张力性气胸是临床诊断，治疗不允许等待影像",
+      "穿刺位置错误（过低伤腹腔结构、偏内有血管）",
+      "减压后必须密封覆盖伤口防复发，并准备途中再穿刺"
+    ],
+    "training_objectives": [
+      "掌握张力性气胸的临床识别（不依赖影像）",
+      "掌握穿刺减压的时机、位置与操作要点",
+      "在交火与后送时间约束下组织救治顺序",
+      "完成后送交接与途中复发监测安排"
+    ],
+    "standard_workflow": [
+      "掩蔽下快速评估（呼吸、颈静脉、气管、叩诊）",
+      "立即胸腔穿刺减压",
+      "胸壁伤口密封敷料覆盖",
+      "持续监测 SpO2 与呼吸音",
+      "后送交接：穿刺时间/部位/复发风险"
+    ],
+    "scoring_rubric": {
+      "maxScore": 100,
+      "dimensions": [
+        { "name": "识别速度与准确性", "weight": 30, "criteria": "不等影像、识别三联征" },
+        { "name": "减压操作时机", "weight": 30, "criteria": "在后送窗口前完成且位置正确" },
+        { "name": "复发预防", "weight": 20, "criteria": "密封敷料与持续监测" },
+        { "name": "后送组织", "weight": 20, "criteria": "交接信息完整、途中监测安排" }
+      ]
+    },
+    "patient_script": {
+      "script_version": 2,
+      "profile": { "name": "小李", "age": 21, "gender": "男", "role": "战士" },
+      "initial_vitals": { "heartRate": 128, "respiratoryRate": 34, "systolicBP": 92, "oxygenSaturation": 86 },
+      "inquiry_map": [
+        { "topic": "主诉", "keywords": ["怎么", "呼吸"], "response": "（战友）他喘得越来越厉害了！", "is_key_info": true },
+        { "topic": "受伤机制", "keywords": ["怎么伤的", "爆炸", "伤口"], "response": "破片打中右边胸口，20 分钟前的事。", "is_key_info": true }
+      ],
+      "exam_results": [
+        { "exam_name": "胸腔穿刺减压", "result_description": "锁骨中线第2肋间穿刺后气体喷出，呼困即刻缓解，SpO2 回升 94%", "is_definitive": true },
+        { "exam_name": "胸壁密封敷料", "result_description": "三边密封敷料覆盖伤口，预防张力复发", "is_definitive": true },
+        { "exam_name": "血氧复测", "result_description": "减压后 SpO2 94%，R 降 至 24 次/分", "is_definitive": false }
+      ],
+      "disposition_options": [
+        {
+          "name": "减压+密封敷料+后送，途中持续监测备再穿刺",
+          "is_correct": true,
+          "feedback": "正确：减压后密封防复发，途中监测并准备再穿刺。"
+        },
+        {
+          "name": "减压后原地观察 30 分钟确认稳定",
+          "is_correct": false,
+          "feedback": "错误：减压只是临时措施，复发风险高，不应延迟后送。"
+        },
+        {
+          "name": "直接后送不做减压",
+          "is_correct": false,
+          "feedback": "错误：25 分钟车程内张力性气胸足以致死。"
+        }
+      ],
+      "rescue": {
+        "time_budget_minutes": 30,
+        "evac_eta_minutes": 25,
+        "action_costs": {
+          "begin": 2, "ask_question": 3, "order_exam": 5,
+          "advance_phase": 2, "reassess": 3, "wait": 10, "submit_disposition": 5
+        },
+        "deterioration": [
+          { "after_minutes": 10, "vitals": { "oxygenSaturation": -4, "systolicBP": -6 }, "symptoms": ["烦躁"] },
+          { "after_minutes": 20, "vitals": { "oxygenSaturation": -6, "heartRate": 10 }, "symptoms": ["意识模糊"] }
+        ],
+        "interventions": [
+          { "action": "order_exam", "match": "穿刺减压", "vitals": { "oxygenSaturation": 8, "systolicBP": 10, "heartRate": -12 }, "consumes": { "needle": 1 } },
+          { "action": "order_exam", "match": "密封敷料", "vitals": {}, "consumes": {} }
+        ],
+        "resources": { "needle": 1 }
+      },
+      "required_revelations": ["主诉", "受伤机制"]
+    }
+  },
+  "source": {
+    "origin": "synthetic",
+    "author": "teaching-team",
+    "note": "合成战救训练病例（非真实患者），WP9 第一阶段 rescue 原型（第 2 例）；正式使用前需医学与卫勤双审"
+  },
+  "change_note": "initial authoring with rescue config"
+}

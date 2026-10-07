@@ -200,3 +200,22 @@ def set_assignment_status(
     except TeachingError as exc:
         raise _to_http(exc) from exc
     return assignment.__dict__
+
+
+@router.get("/audit")
+def query_audit_endpoint(
+    class_id: str,
+    action: str | None = None,
+    limit: int = 100,
+    svc: TeachingService = Depends(get_service),
+):
+    """Class-scoped audit trail (Sprint 5): class staff only."""
+    try:
+        svc.require_role(class_id, _current_user_id(), allowed=("course_admin", "teacher", "reviewer"))
+    except TeachingError as exc:
+        raise _to_http(exc) from exc
+    from deeptutor.teaching.audit import query_audit
+
+    return query_audit(
+        svc._conn, class_id=class_id, action=action, limit=limit
+    )
