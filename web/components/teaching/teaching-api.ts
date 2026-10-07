@@ -94,6 +94,16 @@ export interface CaseContent {
   } | null;
 }
 
+export interface RescueState {
+  elapsed_minutes: number;
+  time_budget_minutes: number;
+  time_remaining_minutes: number;
+  vitals: Record<string, number>;
+  symptoms: string[];
+  resources_used: Record<string, number>;
+  evac_eta_minutes: number;
+}
+
 export interface PatientSessionView {
   session_id: string;
   status: string;
@@ -104,7 +114,17 @@ export interface PatientSessionView {
   revealed_results: string[];
   disposition: string | null;
   outcome: Record<string, unknown> | null;
+  rescue?: RescueState | null;
 }
+
+export const VITAL_LABELS: Record<string, string> = {
+  oxygenSaturation: "SpO2%",
+  heartRate: "心率",
+  respiratoryRate: "呼吸",
+  systolicBP: "收缩压",
+};
+
+export const VITAL_ORDER = ["oxygenSaturation", "heartRate", "respiratoryRate", "systolicBP"];
 
 export interface PatientEvent {
   action_type: string;
@@ -256,7 +276,7 @@ export const teachingApi = {
     getJson<PatientSessionView>(`/api/v1/clinical/attempts/${attemptId}/patient-session`),
   createSession: (attemptId: string) =>
     getJson<PatientSessionView>("/api/v1/clinical/patient-sessions", jsonInit("POST", { attempt_id: attemptId })),
-  performAction: (sessionId: string, actionType: string, payload: Record<string, string>) =>
+  performAction: (sessionId: string, actionType: string, payload: Record<string, string | number>) =>
     getJson<{ released: Record<string, unknown>; state: { phase: string; terminated: boolean } }>(
       `/api/v1/clinical/patient-sessions/${sessionId}/actions`,
       jsonInit("POST", { action_type: actionType, ...payload }),

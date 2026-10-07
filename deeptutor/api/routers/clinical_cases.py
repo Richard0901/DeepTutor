@@ -318,6 +318,7 @@ class PatientActionRequest(BaseModel):
     text: str = Field(default="", max_length=2000)
     exam_name: str = Field(default="", max_length=200)
     option: str = Field(default="", max_length=200)
+    minutes: int | None = Field(default=None, ge=1, le=120)  # wait duration
 
 
 def get_patient_service(conn: Any = Depends(get_conn)):
@@ -362,7 +363,12 @@ def perform_patient_action(
 
     action = Action(
         action_type=req.action_type,
-        payload={"text": req.text, "exam_name": req.exam_name, "option": req.option},
+        payload={
+            "text": req.text,
+            "exam_name": req.exam_name,
+            "option": req.option,
+            "minutes": req.minutes,
+        },
     )
     try:
         result = svc.perform_action(session_id, actor_id=_current_user_id(), action=action)

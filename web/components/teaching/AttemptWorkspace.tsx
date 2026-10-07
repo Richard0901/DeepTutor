@@ -18,6 +18,8 @@ import {
   ReasoningStep,
   STEP_LABELS,
   teachingApi,
+  VITAL_LABELS,
+  VITAL_ORDER,
 } from "@/components/teaching/teaching-api";
 
 const STEP_ORDER = [
@@ -50,6 +52,7 @@ export default function AttemptWorkspace() {
   const [question, setQuestion] = useState("");
   const [examName, setExamName] = useState("");
   const [disposition, setDisposition] = useState("");
+  const [waitMinutes, setWaitMinutes] = useState(10);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
@@ -114,7 +117,7 @@ export default function AttemptWorkspace() {
 
   const submit = () => run(() => teachingApi.submitAttempt(attemptId), "已提交，等待教师复核");
 
-  const patientAction = (actionType: string, payload: Record<string, string> = {}) =>
+  const patientAction = (actionType: string, payload: Record<string, string | number> = {}) =>
     run(async () => {
       if (!session) throw new Error("会话不存在");
       const result = await teachingApi.performAction(session.session_id, actionType, payload);
@@ -191,6 +194,10 @@ export default function AttemptWorkspace() {
             >
               开始接诊
             </button>
+          )}
+
+          {session?.rescue && (
+            <RescueBar rescue={session.rescue} terminated={session.status === "terminated"} />
           )}
 
           {session && (
@@ -271,6 +278,35 @@ export default function AttemptWorkspace() {
                       进入下一阶段
                     </button>
                   )}
+                  {session.rescue && session.phase !== "initial" && (
+                    <>
+                      <select
+                        className="rounded border p-2 text-sm"
+                        value={waitMinutes}
+                        onChange={(e) => setWaitMinutes(Number(e.target.value))}
+                      >
+                        {[5, 10, 15, 20].map((m) => (
+                          <option key={m} value={m}>
+                            观察 {m} 分钟
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        className="rounded border px-3 py-1.5 text-sm"
+                        disabled={busy}
+                        onClick={() => patientAction("wait", { minutes: waitMinutes })}
+                      >
+                        等待
+                      </button>
+                      <button
+                        className="rounded border px-3 py-1.5 text-sm"
+                        disabled={busy}
+                        onClick={() => patientAction("reassess")}
+                      >
+                        再评估
+                      </button>
+                    </>
+                  )}
                   {session.phase === "disposition" && (
                     <button
                       className="rounded bg-green-600 px-3 py-1.5 text-sm text-white"
@@ -290,6 +326,10 @@ export default function AttemptWorkspace() {
                     ? "✅ 正确"
                     : "❌ 不正确"}
                 </p>
+              )}
+
+              {session.rescue && session.outcome && (
+                <RescueOutcome rescue={session.rescue} outcome={session.outcome} />
               )}
 
               {events.length > 0 && (
@@ -375,6 +415,100 @@ export default function AttemptWorkspace() {
           教师复核意见：{attempt.review_notes || "（无）"}
         </p>
       )}
+    </div>
+  );
+}
+
+
+function RescueBar({
+  rescue,
+  terminated,
+}: {
+  rescue: NonNullable<PatientSessionView["rescue"]>;
+  terminated: boolean;
+}) {
+  const overtime = rescue.time_remaining_minutes < 0;
+  const lateForEvac = !terminated && rescue.elapsed_minutes > rescue.evac_eta_minutes;
+  return (
+    <div className="space-y-2 rounded bg-gray-50 p-3">
+      <div className="flex flex-wrap items-center gap-3 text-sm">
+        <span className={overtime ? "font-medium text-red-600" : "font-medium"}>
+          用时 {rescue.elapsed_minutes}/{rescue.time_budget_minutes} 分钟
+        </span>
+        <span className="text-gray-500">后送窗口 {rescue.evac_eta_minutes} 分钟</span>
+        {lateForEvac && <span className="rounded bg-red-100 px-2 text-xs text-red-700">已过后送窗口</span>}
+      </div>
+      <div className="flex flex-wrap gap-2 text-xs">
+        {VITAL_ORDER.filter((k) => k in rescue.vitals).map((k) => (
+          <span key={k} className="rounded border bg-white px-2 py-1">
+            {VITAL_LABELS[k] ?? k}: <span className="font-medium">{rescue.vitals[k]}</span>
+          </span>
+        ))}
+        {Object.keys(rescue.vitals)
+          .filter((k) => !VITAL_ORDER.includes(k))
+          .map((k) => (
+            <span key={k} className="rounded border bg-white px-2 py-1">
+              {k}: <span className="font-medium">{rescue.vitals[k]}</span>
+            </span>
+          ))}
+      </div>
+      {rescue.symptoms.length > 0 && (
+        <div className="flex flex-wrap gap-1 text-xs">
+          {rescue.symptoms.map((s) => (
+            <span key={s} className="rounded bg-red-100 px-2 py-0.5 text-red-700">
+              {s}
+            </span>
+          ))}
+        </div>
+      )}
+      {Object.keys(rescue.resources_used).length > 0 && (
+        <p className="text-xs text-gray-500">
+          资源消耗：
+          {Object.entries(rescue.resources_used)
+            .map(([k, v]) => `${k} ×${v}`)
+            .join("，")}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function RescueOutcome({
+  rescue,
+  outcome,
+}: {
+  rescue: NonNullable<PatientSessionView["rescue"]>;
+  outcome: Record<string, unknown>;
+}) {
+  const ro = outcome["rescue_outcome"] as
+    | {
+        evac_in_time?: boolean;
+        elapsed_minutes?: number;
+        time_remaining_minutes?: number;
+        final_vitals?: Record<string, number>;
+      }
+    | undefined;
+  if (!ro) return null;
+  return (
+    <div className="rounded border border-blue-200 bg-blue-50 p-3 text-sm">
+      <p className="font-medium">战救结局评估</p>
+      <ul className="mt-1 space-y-0.5 text-xs">
+        <li>
+          后送时机：
+          {ro.evac_in_time ? "✅ 在后送窗口内完成处置" : "❌ 错过后送窗口"}
+        </li>
+        <li>
+          用时：{ro.elapsed_minutes} 分钟（剩余 {ro.time_remaining_minutes} 分钟）
+        </li>
+        {ro.final_vitals && (
+          <li>
+            最终体征：
+            {VITAL_ORDER.filter((k) => k in ro.final_vitals!)
+              .map((k) => `${VITAL_LABELS[k] ?? k} ${ro.final_vitals![k]}`)
+              .join("，")}
+          </li>
+        )}
+      </ul>
     </div>
   );
 }
