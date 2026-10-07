@@ -117,6 +117,32 @@ export interface PatientSessionView {
   rescue?: RescueState | null;
 }
 
+export interface GradebookData {
+  class_id: string;
+  framework: { formative_weight: number; summative_weight: number; weighted_total: null };
+  summative_titles: string[];
+  students: {
+    student_id: string;
+    formative: {
+      attempts_total: number;
+      attempts_submitted: number;
+      attempts_reviewed: number;
+      marked_correct: number;
+      marked_total: number;
+    };
+    summative: Record<string, number | null>;
+  }[];
+}
+
+export interface ProgressProfile {
+  student_id: string;
+  level_distribution: Record<string, { attempts: number; submitted: number; reviewed: number }>;
+  error_trends: Record<string, { total: number; last_30d: number }>;
+  compensation_triggered: string[];
+  compensation_window_days: number;
+  compensation_threshold: number;
+}
+
 export const VITAL_LABELS: Record<string, string> = {
   oxygenSaturation: "SpO2%",
   heartRate: "心率",
@@ -308,6 +334,19 @@ export const teachingApi = {
     getJson<Intervention>(`/api/v1/clinical/teacher/interventions/${interventionId}/resolve`, jsonInit("POST", { outcome })),
   listInterventions: (classId: string) =>
     getJson<Intervention[]>(`/api/v1/clinical/teacher/classes/${classId}/interventions`),
+  gradebook: (classId: string) =>
+    getJson<GradebookData>(`/api/v1/clinical/teacher/classes/${classId}/gradebook`),
+  recordSummative: (classId: string, studentId: string, title: string, score: number, note = "") =>
+    getJson<Record<string, unknown>>(
+      `/api/v1/clinical/teacher/classes/${classId}/gradebook/scores`,
+      jsonInit("POST", { student_id: studentId, title, score, note }),
+    ),
+  gradebookCsv: async (classId: string) => {
+    const res = await apiFetch(apiUrl(`/api/v1/clinical/teacher/classes/${classId}/gradebook.csv`));
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.text();
+  },
+  myProgress: () => getJson<ProgressProfile>("/api/v1/clinical/my/progress"),
 };
 
 export const ERROR_TYPE_LABELS: Record<string, string> = {

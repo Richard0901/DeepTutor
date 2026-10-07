@@ -12,6 +12,7 @@ import {
   AssessmentScore,
   ClassOverview,
   ERROR_TYPE_LABELS,
+  GradebookData,
   Intervention,
   RiskFlag,
   TeachingClass,
@@ -27,6 +28,8 @@ export default function TeacherDashboard() {
   const [flags, setFlags] = useState<RiskFlag[]>([]);
   const [queue, setQueue] = useState<AssessmentScore[]>([]);
   const [interventions, setInterventions] = useState<Intervention[]>([]);
+  const [gradebook, setGradebook] = useState<GradebookData | null>(null);
+  const [tab, setTab] = useState<"overview" | "gradebook">("overview");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
 
@@ -81,6 +84,7 @@ export default function TeacherDashboard() {
         setFlags(rf);
         setQueue(q);
         setInterventions(iv);
+        setGradebook(await teachingApi.gradebook(classId).catch(() => null));
         setError("");
       } catch (e) {
         if (alive) setError(e instanceof Error ? e.message : String(e));
@@ -119,7 +123,24 @@ export default function TeacherDashboard() {
       {notice && <p className="rounded border border-blue-300 bg-blue-50 p-2 text-sm text-blue-800">{notice}</p>}
       {!classId && <p className="text-sm text-gray-500">尚未加入任何班级（作为教师/管理员）。</p>}
 
-      {overview && (
+      {classId && (
+        <div className="flex gap-2 text-sm">
+          <button
+            className={`rounded px-3 py-1.5 ${tab === "overview" ? "bg-blue-600 text-white" : "border"}`}
+            onClick={() => setTab("overview")}
+          >
+            学情总览
+          </button>
+          <button
+            className={`rounded px-3 py-1.5 ${tab === "gradebook" ? "bg-blue-600 text-white" : "border"}`}
+            onClick={() => setTab("gradebook")}
+          >
+            成绩册
+          </button>
+        </div>
+      )}
+
+      {tab === "overview" && overview && (
         <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
           <Metric label="任务数" value={overview.assignments.length} />
           <Metric label="待复核评估" value={overview.pending_reviews} />
@@ -128,7 +149,7 @@ export default function TeacherDashboard() {
         </section>
       )}
 
-      {overview && (
+      {tab === "overview" && overview && (
         <section className="rounded border p-4">
           <h2 className="mb-2 font-medium">作业完成度</h2>
           <table className="w-full text-sm">
@@ -154,7 +175,7 @@ export default function TeacherDashboard() {
         </section>
       )}
 
-      {flags.length > 0 && (
+      {tab === "overview" && flags.length > 0 && (
         <section className="space-y-2 rounded border border-amber-300 bg-amber-50 p-4">
           <h2 className="font-medium">风险队列（{flags.length}）</h2>
           {flags.map((f) => (
@@ -185,7 +206,7 @@ export default function TeacherDashboard() {
         </section>
       )}
 
-      {queue.length > 0 && (
+      {tab === "overview" && queue.length > 0 && (
         <section className="space-y-2 rounded border p-4">
           <h2 className="font-medium">评估复核队列（{queue.length}）</h2>
           {queue.map((s) => (
@@ -194,7 +215,11 @@ export default function TeacherDashboard() {
         </section>
       )}
 
-      {interventions.length > 0 && (
+      {tab === "gradebook" && gradebook && (
+        <GradebookSection gradebook={gradebook} classId={classId} onDone={(m) => run(() => Promise.resolve(), m)} reload={reload} />
+      )}
+
+      {tab === "overview" && interventions.length > 0 && (
         <section className="space-y-2 rounded border p-4">
           <h2 className="font-medium">干预记录</h2>
           {interventions.map((i) => (
@@ -283,5 +308,118 @@ function ReviewRow({
         </button>
       </div>
     </div>
+  );
+}
+
+
+function GradebookSection({
+  gradebook,
+  classId,
+  onDone,
+  reload,
+}: {
+  gradebook: GradebookData;
+  classId: string;
+  onDone: (msg: string) => void;
+  reload: () => Promise<void>;
+}) {
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+
+  const record = async (studentId: string, title: string, raw: string) => {
+    if (!raw.trim()) return;
+    try {
+      await teachingApi.recordSummative(classId, studentId, title, Number(raw));
+      onDone("成绩已记录");
+      setDrafts((prev) => ({ ...prev, [`${studentId}:${title}`]: "" }));
+      await reload();
+    } catch (e) {
+      onDone(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  const exportCsv = async () => {
+    try {
+      const csv = await teachingApi.gradebookCsv(classId);
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `gradebook-${classId.slice(0, 8)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      onDone(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  return (
+    <section className="space-y-3 rounded border p-4">
+      <div className="flex items-center justify-between">
+        <h2 className="font-medium">成绩册</h2>
+        <button className="rounded border px-2 py-1 text-xs" onClick={() => void exportCsv()}>
+          导出 CSV
+        </button>
+      </div>
+      <p className="text-xs text-gray-500">
+        40/60 框架占位：过程性组件自动汇总，终结性成绩由教师录入；权重合成待决策冻结后启用。
+      </p>
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b text-left text-gray-500">
+            <th className="py-1">学员</th>
+            <th>尝试/提交/复核</th>
+            <th>标记正确</th>
+            {gradebook.summative_titles.map((title) => (
+              <th key={title}>{title}</th>
+            ))}
+            <th>录入终结性成绩</th>
+          </tr>
+        </thead>
+        <tbody>
+          {gradebook.students.map((s) => (
+            <tr key={s.student_id} className="border-b align-top">
+              <td className="py-2">{s.student_id}</td>
+              <td className="text-xs">
+                {s.formative.attempts_total} / {s.formative.attempts_submitted} /{" "}
+                {s.formative.attempts_reviewed}
+              </td>
+              <td className="text-xs">
+                {s.formative.marked_correct}/{s.formative.marked_total}
+              </td>
+              {gradebook.summative_titles.map((title) => (
+                <td key={title} className="text-xs">
+                  {s.summative[title] ?? "—"}
+                </td>
+              ))}
+              <td>
+                <div className="flex gap-1">
+                  <input
+                    className="w-16 rounded border p-1 text-xs"
+                    placeholder="0-100"
+                    value={drafts[`${s.student_id}:__new`] ?? ""}
+                    onChange={(e) =>
+                      setDrafts((prev) => ({ ...prev, [`${s.student_id}:__new`]: e.target.value }))
+                    }
+                  />
+                  <button
+                    className="rounded border px-2 py-1 text-xs"
+                    disabled={!drafts[`${s.student_id}:__new`]?.trim()}
+                    onClick={() => {
+                      const title =
+                        drafts[`${s.student_id}:__title`] ||
+                        gradebook.summative_titles[gradebook.summative_titles.length - 1] ||
+                        "终结性评价";
+                      void record(s.student_id, title, drafts[`${s.student_id}:__new`] ?? "");
+                    }}
+                  >
+                    记录
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
   );
 }

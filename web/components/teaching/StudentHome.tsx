@@ -88,7 +88,12 @@ export default function StudentHome() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-5 p-6">
-      <h1 className="text-xl font-semibold">我的训练任务</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-semibold">我的训练任务</h1>
+        <a className="text-sm text-blue-600 hover:underline" href="/learn/progress">
+          我的训练画像 →
+        </a>
+      </div>
       {error && <p className="rounded border border-red-300 bg-red-50 p-2 text-sm text-red-700">{error}</p>}
 
       {classes.length === 0 ? (
